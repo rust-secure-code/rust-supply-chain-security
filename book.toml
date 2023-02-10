@@ -1,0 +1,13 @@
+[book]
+authors = ["Alexis Mousset <contact@amousset.me>"]
+language = "en"
+title = "Rust Supply Chain Security Guide"
+description = "A guide to securing the software supply chain of Rust programs and libraries"
+
+[rust]
+edition = "2021"
+
+[output.html]
+git-repository-url = "https://github.com/amousset/rust-supply-chain-security"
+git-repository-icon = "fa-github"
+edit-url-template = "https://github.com/amousset/rust-supply-chain-security/edit/main/{path}"
