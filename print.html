@@ -157,20 +157,35 @@ general advice or tooling. It has a hands-on focus and tries to provide actionna
 whenever possible. 
 It will also mention the current limitations and missing parts.
 It builds upon existing resources, like <a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">llogiq's blog post</a>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="dependencies"><a class="header" href="#dependencies">Dependencies</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="using-dependencies"><a class="header" href="#using-dependencies">Using dependencies</a></h1>
 <p>cargo makes it really easy to use dependencies, so the Rust ecosystem tends
-to use a lot of dependencies.
+to use a lot of them.
 This comes with security risks, and we'll see how to mitigate them.</p>
 <h2 id="choosing-dependencies"><a class="header" href="#choosing-dependencies">Choosing dependencies</a></h2>
+<h3 id="risks"><a class="header" href="#risks">Risks</a></h3>
+<ul>
+<li>vulnerabilities</li>
+<li>malicious crates or releases
+<ul>
+<li>typo squatting (e.g. <a href="https://blog.rust-lang.org/2022/05/10/malicious-crate-rustdecimal.html">rustdecimal</a>)</li>
+<li>build.rs/proc macros risks</li>
+</ul>
+</li>
+<li>(lack of) maintenance</li>
+<li>license compliance (not directly linked to security but shared tooling)</li>
+</ul>
 <h3 id="minimizing-dependencies"><a class="header" href="#minimizing-dependencies">Minimizing dependencies</a></h3>
 <ul>
 <li>minimize dependencies (limit features, tools to explore dependency tree, etc.)</li>
+<li>number of dependencies != attack surface (cargo supply-chain)</li>
 </ul>
-<h3 id="assessing-a-new-dependency"><a class="header" href="#assessing-a-new-dependency">Assessing a new dependency</a></h3>
+<h3 id="assessing-a-dependency"><a class="header" href="#assessing-a-dependency">Assessing a dependency</a></h3>
 <ul>
-<li>evaluate a crate https://gist.github.com/repi/d98bf9c202ec567fd67ef9e31152f43f</li>
-<li>typo squatting (rustdecimal https://blog.rust-lang.org/2022/05/10/malicious-crate-rustdecimal.html)</li>
-<li>build.rs/proc macros risks</li>
+<li>evaluate a crate
+<ul>
+<li><a href="https://gist.github.com/repi/d98bf9c202ec567fd67ef9e31152f43f">check list by Embark</a></li>
+</ul>
+</li>
 <li>cargo crev</li>
 <li>cargo vet</li>
 <li><code>unsafe</code> code management (cargo-geiger, etc.)</li>
@@ -178,14 +193,19 @@ This comes with security risks, and we'll see how to mitigate them.</p>
 <h2 id="maintaining-dependencies"><a class="header" href="#maintaining-dependencies">Maintaining dependencies</a></h2>
 <ul>
 <li>Cargo.lock for binaries</li>
-<li>cargo supply-chain to see</li>
 <li>vuln monitoring with cargo audit/deny</li>
-<li>regular updates (to stay on maintained versions), cargo outdated, depenabot</li>
+<li>regular updates (to stay on maintained versions)
+<ul>
+<li>cargo outdated</li>
+<li>dependabot</li>
+</ul>
+</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="publishing-a-crate-on-cratesio"><a class="header" href="#publishing-a-crate-on-cratesio">Publishing a crate on crates.io</a></h1>
 <p>best practices to secure publication 
 and help crates consumers.</p>
 <ul>
+<li>allow users of the crate to control transitive dependencies depending on their needs, using features.</li>
 <li>current risks (no mfa, etc.)</li>
 <li>crates.io token</li>
 <li>publishing permissions on crates.io</li>
@@ -205,6 +225,7 @@ and help crates consumers.</p>
 <li>cargo auditable</li>
 <li>rust version in binary</li>
 <li>trivy, other tooling...</li>
+<li>warning not everything is visible: embedded c/c++ deps not visible, etc.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="todo"><a class="header" href="#todo">TODO</a></h1>
 <ul>
