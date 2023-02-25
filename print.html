@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">5.</strong> Running in production</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li><li class="chapter-item expanded "><a href="signature.html"><strong aria-hidden="true">6.</strong> Code signature</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="vulnerabilities.html"><strong aria-hidden="true">5.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li><li class="chapter-item expanded "><a href="signature.html"><strong aria-hidden="true">6.</strong> Code signature</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -215,6 +215,7 @@ and help crates consumers.</p>
 <ul>
 <li>cargo --locked</li>
 <li>rust-toolchain.toml</li>
+<li>github actions security</li>
 <li>network access in build.rs? sandboxing?</li>
 <li>in general, reproductible &amp; ephemeral build env...</li>
 </ul>
@@ -227,13 +228,15 @@ and help crates consumers.</p>
 <li>trivy, other tooling...</li>
 <li>warning not everything is visible: embedded c/c++ deps not visible, etc.</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="todo"><a class="header" href="#todo">TODO</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="vulnerability-detection"><a class="header" href="#vulnerability-detection">Vulnerability detection</a></h1>
+<p>Detect and track affecting production.</p>
 <ul>
-<li>vuln detection/tracking
+<li>on source or sbom or binary
 <ul>
-<li>on source or sbom or binary</li>
+<li>cargo audit / deny</li>
 <li>dependabot/github security alerts
 https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/</li>
+<li>other generic tools</li>
 </ul>
 </li>
 </ul>
