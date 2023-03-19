@@ -9,7 +9,7 @@
 
         <!-- Custom HTML head -->
         
-        <meta name="description" content="TODO">
+        <meta name="description" content="A guide to securing the software supply chain of Rust programs and librairies">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
@@ -71,10 +71,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -82,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="vulnerabilities.html"><strong aria-hidden="true">5.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li><li class="chapter-item expanded "><a href="signature.html"><strong aria-hidden="true">6.</strong> Code signature</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Signature</div></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">6.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -150,6 +152,8 @@
 <h2 id="software-supply-chain-security-what-is-it-and-why-should-i-care"><a class="header" href="#software-supply-chain-security-what-is-it-and-why-should-i-care">Software Supply Chain Security: What is it and why should I care?</a></h2>
 <p>TODO: Quickly explain what software supply chain is and why its security matters,
 with references to more detailed resources.</p>
+<p>openssf
+slsa</p>
 <h2 id="about-this-guide"><a class="header" href="#about-this-guide">About this guide</a></h2>
 <p>This guide is aimed at both developers working on Rust programs for end-users and libraries developers.</p>
 <p>It focuses on currently available tooling for the Rust ecosystem, but also mentions more
@@ -160,7 +164,7 @@ It builds upon existing resources, like <a href="https://blog.logrocket.com/comp
 <div style="break-before: page; page-break-before: always;"></div><h1 id="using-dependencies"><a class="header" href="#using-dependencies">Using dependencies</a></h1>
 <p>cargo makes it really easy to use dependencies, so the Rust ecosystem tends
 to use a lot of them.
-This comes with security risks, and we'll see how to mitigate them.</p>
+This comes with security risks, and we'll see how we can mitigate them.</p>
 <h2 id="choosing-dependencies"><a class="header" href="#choosing-dependencies">Choosing dependencies</a></h2>
 <h3 id="risks"><a class="header" href="#risks">Risks</a></h3>
 <ul>
@@ -197,7 +201,8 @@ This comes with security risks, and we'll see how to mitigate them.</p>
 <li>regular updates (to stay on maintained versions)
 <ul>
 <li>cargo outdated</li>
-<li>dependabot</li>
+<li>dependabot/github security alerts
+https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/</li>
 </ul>
 </li>
 </ul>
@@ -212,44 +217,84 @@ and help crates consumers.</p>
 <li>report vulns to rustsec</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="build-for-production"><a class="header" href="#build-for-production">Build for production</a></h1>
+<h2 id="embed-dependency-list-in-binaries-cargo-auditable"><a class="header" href="#embed-dependency-list-in-binaries-cargo-auditable">Embed dependency list in binaries: <code>cargo auditable</code></a></h2>
+<ul>
+<li>cargo auditable</li>
+</ul>
+<p>limits</p>
+<h2 id="deterministic-builds"><a class="header" href="#deterministic-builds">Deterministic builds</a></h2>
 <ul>
 <li>cargo --locked</li>
 <li>rust-toolchain.toml</li>
+</ul>
+<h2 id="reproducible-builds"><a class="header" href="#reproducible-builds">Reproducible builds</a></h2>
+<p>??</p>
+<h2 id="other-advices"><a class="header" href="#other-advices">Other advices</a></h2>
+<ul>
 <li>github actions security</li>
-<li>network access in build.rs? sandboxing?</li>
-<li>in general, reproductible &amp; ephemeral build env...</li>
+<li>network access in build.rs? sandboxing?
+SLSA: ephemeral builder</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="software-bill-of-materials"><a class="header" href="#software-bill-of-materials">Software Bill Of Materials</a></h1>
+<p>SBOM for Rust programs usually need to be created from the sources.</p>
+<p>Choosing a SBOM format is up to you but they should be <em>mostly</em> interoperable.</p>
+<h2 id="cyclonedx"><a class="header" href="#cyclonedx">CycloneDX</a></h2>
+<p>There is an official CycloneDX cargo subcommand to generate a SBOM
+from a Rust project source, <a href="https://crates.io/crates/cargo-cyclonedx"><code>cargo-cyclonedx</code></a></p>
+<pre><code class="language-bash">cargo cyclonedx --all --format json --manifest-path Cargo.toml
+</code></pre>
+<p>It can handle workspaces, and produces a json or XML file.</p>
+<p>To aggregate several files, validate or sign them, you can use the <a href="https://github.com/CycloneDX/cyclonedx-cli"><code>cyclonedx-cli</code></a>.</p>
+<pre><code class="language-bash">cyclonedx merge --input-files *.json --output-file myprogram.cdx.json
+</code></pre>
 <ul>
-<li>cargo spdx</li>
-<li>cargo cyclonedx</li>
+<li>spdx</li>
 <li>cargo auditable</li>
 <li>rust version in binary</li>
 <li>trivy, other tooling...</li>
 <li>warning not everything is visible: embedded c/c++ deps not visible, etc.</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="vulnerability-detection"><a class="header" href="#vulnerability-detection">Vulnerability detection</a></h1>
-<p>Detect and track affecting production.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="running-in-production"><a class="header" href="#running-in-production">Running in production</a></h1>
+<p>In this section, we will see what we can do to track
+known vulnerabilities in Rust programs.</p>
+<p>It won't cover generic deployment security as there are numerous options
+(containers, Windows msi/exe installers, Linux rpm/dpkg/etc. packages, etc.)
+but you should make sure you can verify that deployed artifacts'
+source and integrity (various artifact signature mechanism can help).</p>
+<h2 id="audit-binaries"><a class="header" href="#audit-binaries">Audit binaries</a></h2>
+<p><code>cargo audit</code> has some capacities to audit Rust binaries for known
+vulnerabilities in their dependencies.</p>
+<p>It has two operation modes in this context:</p>
 <ul>
-<li>on source or sbom or binary
+<li>Audit for known vulnerabilities in the dependency list embedded by <code>cargo-auditable</code>.</li>
+<li>Audit for known vulnerabilities in a dependency list extracted from panic messages.
 <ul>
-<li>cargo audit / deny</li>
-<li>dependabot/github security alerts
-https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/</li>
-<li>other generic tools</li>
+<li>This is incomplete as not all crates include panics</li>
+<li>Depending on the compilation options, panic messages may not be available</li>
 </ul>
 </li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="signature"><a class="header" href="#signature">Signature</a></h1>
-<ul>
-<li>sigstore RFC
-<ul>
-<li>https://internals.rust-lang.org/t/pre-rfc-using-sigstore-for-signing-and-verifying-crates/18115</li>
-<li>https://github.com/trustification/rust-rfcs/blob/sigstore-rfc/text/0000-sigstore-integration.md</li>
-</ul>
-</li>
-<li>other suggestions https://insanitybit.github.io/2022/05/10/supply-chain-thoughts</li>
-</ul>
+<p>You can also use other tools like <a href="https://github.com/aquasecurity/trivy">trivy</a> which is able to look for
+known vulnerabilities in Rust binaries by using the same dependency list built by <code>cargo-auditable</code>.</p>
+<pre><code class="language-bash">$ trivy image --security-checks vuln docker-image
+2022-08-15T11:32:03.923+0300    INFO    Vulnerability scanning is enabled
+2022-08-15T11:32:05.031+0300    INFO    Number of language-specific files: 1
+2022-08-15T11:32:05.032+0300    INFO    Detecting rust-binary vulnerabilities...
+
+your_binary (rust-binary)
+=========================
+Total: 1 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 1, CRITICAL: 0)
+
+┌─────────────────┬─────────────────────┬──────────┬───────────────────┬───────────────┬───────────────────────────────────────────────────┐
+│     Library     │    Vulnerability    │ Severity │ Installed Version │ Fixed Version │                       Title                       │
+├─────────────────┼─────────────────────┼──────────┼───────────────────┼───────────────┼───────────────────────────────────────────────────┤
+│    websocket    │    CVE-2022-35922   │ HIGH     │ 0.26.4            │ 0.26.5        │ Untrusted websocket connections can cause an      | 
+│                 │                     │          │                   │               │ out-of-memory (OOM) process abort in a client     │
+│                 │                     │          │                   │               │ or a server.                                      │
+└─────────────────┴─────────────────────┴──────────┴───────────────────┴───────────────┴───────────────────────────────────────────────────┘
+</code></pre>
+<h2 id="audit-sboms"><a class="header" href="#audit-sboms">Audit SBOMs</a></h2>
+<p>TODO</p>
 
                     </main>
 

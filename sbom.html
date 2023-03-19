@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
         
-        <meta name="description" content="TODO">
+        <meta name="description" content="A guide to securing the software supply chain of Rust programs and librairies">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
@@ -70,10 +70,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -81,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html" class="active"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="vulnerabilities.html"><strong aria-hidden="true">5.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li><li class="chapter-item expanded "><a href="signature.html"><strong aria-hidden="true">6.</strong> Code signature</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html" class="active"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Signature</div></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">6.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -149,9 +151,19 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="software-bill-of-materials"><a class="header" href="#software-bill-of-materials">Software Bill Of Materials</a></h1>
+<p>SBOM for Rust programs usually need to be created from the sources.</p>
+<p>Choosing a SBOM format is up to you but they should be <em>mostly</em> interoperable.</p>
+<h2 id="cyclonedx"><a class="header" href="#cyclonedx">CycloneDX</a></h2>
+<p>There is an official CycloneDX cargo subcommand to generate a SBOM
+from a Rust project source, <a href="https://crates.io/crates/cargo-cyclonedx"><code>cargo-cyclonedx</code></a></p>
+<pre><code class="language-bash">cargo cyclonedx --all --format json --manifest-path Cargo.toml
+</code></pre>
+<p>It can handle workspaces, and produces a json or XML file.</p>
+<p>To aggregate several files, validate or sign them, you can use the <a href="https://github.com/CycloneDX/cyclonedx-cli"><code>cyclonedx-cli</code></a>.</p>
+<pre><code class="language-bash">cyclonedx merge --input-files *.json --output-file myprogram.cdx.json
+</code></pre>
 <ul>
-<li>cargo spdx</li>
-<li>cargo cyclonedx</li>
+<li>spdx</li>
 <li>cargo auditable</li>
 <li>rust version in binary</li>
 <li>trivy, other tooling...</li>
@@ -166,7 +178,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="vulnerabilities.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="run.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -180,7 +192,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="vulnerabilities.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="run.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -3,12 +3,12 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Code signature - Rust Supply Chain Security Guide</title>
+        <title>Detecting vulnerabilities - Rust Supply Chain Security Guide</title>
 
 
         <!-- Custom HTML head -->
         
-        <meta name="description" content="TODO">
+        <meta name="description" content="A guide to securing the software supply chain of Rust programs and librairies">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
@@ -70,10 +70,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -81,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="vulnerabilities.html"><strong aria-hidden="true">5.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li><li class="chapter-item expanded "><a href="signature.html" class="active"><strong aria-hidden="true">6.</strong> Code signature</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Signature</div></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html" class="active"><strong aria-hidden="true">6.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -119,7 +121,7 @@
                         <a href="https://github.com/amousset/rust-supply-chain" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/amousset/rust-supply-chain/edit/main/src/signature.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/amousset/rust-supply-chain/edit/main/src/run.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -148,22 +150,53 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="signature"><a class="header" href="#signature">Signature</a></h1>
+                        <h1 id="running-in-production"><a class="header" href="#running-in-production">Running in production</a></h1>
+<p>In this section, we will see what we can do to track
+known vulnerabilities in Rust programs.</p>
+<p>It won't cover generic deployment security as there are numerous options
+(containers, Windows msi/exe installers, Linux rpm/dpkg/etc. packages, etc.)
+but you should make sure you can verify that deployed artifacts'
+source and integrity (various artifact signature mechanism can help).</p>
+<h2 id="audit-binaries"><a class="header" href="#audit-binaries">Audit binaries</a></h2>
+<p><code>cargo audit</code> has some capacities to audit Rust binaries for known
+vulnerabilities in their dependencies.</p>
+<p>It has two operation modes in this context:</p>
 <ul>
-<li>sigstore RFC
+<li>Audit for known vulnerabilities in the dependency list embedded by <code>cargo-auditable</code>.</li>
+<li>Audit for known vulnerabilities in a dependency list extracted from panic messages.
 <ul>
-<li>https://internals.rust-lang.org/t/pre-rfc-using-sigstore-for-signing-and-verifying-crates/18115</li>
-<li>https://github.com/trustification/rust-rfcs/blob/sigstore-rfc/text/0000-sigstore-integration.md</li>
+<li>This is incomplete as not all crates include panics</li>
+<li>Depending on the compilation options, panic messages may not be available</li>
 </ul>
 </li>
-<li>other suggestions https://insanitybit.github.io/2022/05/10/supply-chain-thoughts</li>
 </ul>
+<p>You can also use other tools like <a href="https://github.com/aquasecurity/trivy">trivy</a> which is able to look for
+known vulnerabilities in Rust binaries by using the same dependency list built by <code>cargo-auditable</code>.</p>
+<pre><code class="language-bash">$ trivy image --security-checks vuln docker-image
+2022-08-15T11:32:03.923+0300    INFO    Vulnerability scanning is enabled
+2022-08-15T11:32:05.031+0300    INFO    Number of language-specific files: 1
+2022-08-15T11:32:05.032+0300    INFO    Detecting rust-binary vulnerabilities...
+
+your_binary (rust-binary)
+=========================
+Total: 1 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 1, CRITICAL: 0)
+
+┌─────────────────┬─────────────────────┬──────────┬───────────────────┬───────────────┬───────────────────────────────────────────────────┐
+│     Library     │    Vulnerability    │ Severity │ Installed Version │ Fixed Version │                       Title                       │
+├─────────────────┼─────────────────────┼──────────┼───────────────────┼───────────────┼───────────────────────────────────────────────────┤
+│    websocket    │    CVE-2022-35922   │ HIGH     │ 0.26.4            │ 0.26.5        │ Untrusted websocket connections can cause an      | 
+│                 │                     │          │                   │               │ out-of-memory (OOM) process abort in a client     │
+│                 │                     │          │                   │               │ or a server.                                      │
+└─────────────────┴─────────────────────┴──────────┴───────────────────┴───────────────┴───────────────────────────────────────────────────┘
+</code></pre>
+<h2 id="audit-sboms"><a class="header" href="#audit-sboms">Audit SBOMs</a></h2>
+<p>TODO</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="vulnerabilities.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="sbom.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -174,7 +207,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="vulnerabilities.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="sbom.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 

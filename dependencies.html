@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
         
-        <meta name="description" content="TODO">
+        <meta name="description" content="A guide to securing the software supply chain of Rust programs and librairies">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
@@ -70,10 +70,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -81,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html" class="active"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="vulnerabilities.html"><strong aria-hidden="true">5.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li><li class="chapter-item expanded "><a href="signature.html"><strong aria-hidden="true">6.</strong> Code signature</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html" class="active"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Signature</div></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">6.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -151,7 +153,7 @@
                         <h1 id="using-dependencies"><a class="header" href="#using-dependencies">Using dependencies</a></h1>
 <p>cargo makes it really easy to use dependencies, so the Rust ecosystem tends
 to use a lot of them.
-This comes with security risks, and we'll see how to mitigate them.</p>
+This comes with security risks, and we'll see how we can mitigate them.</p>
 <h2 id="choosing-dependencies"><a class="header" href="#choosing-dependencies">Choosing dependencies</a></h2>
 <h3 id="risks"><a class="header" href="#risks">Risks</a></h3>
 <ul>
@@ -188,7 +190,8 @@ This comes with security risks, and we'll see how to mitigate them.</p>
 <li>regular updates (to stay on maintained versions)
 <ul>
 <li>cargo outdated</li>
-<li>dependabot</li>
+<li>dependabot/github security alerts
+https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/</li>
 </ul>
 </li>
 </ul>
