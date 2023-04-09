@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Signature</div></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">6.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklists</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Signature</div></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">6.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -149,52 +149,129 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<h2 id="software-supply-chain-security-what-is-it-and-why-should-i-care"><a class="header" href="#software-supply-chain-security-what-is-it-and-why-should-i-care">Software Supply Chain Security: What is it and why should I care?</a></h2>
-<p>TODO: Quickly explain what software supply chain is and why its security matters,
-with references to more detailed resources.</p>
-<p>openssf
-slsa</p>
+<h2 id="what-is-software-supply-chain-security"><a class="header" href="#what-is-software-supply-chain-security">What is <em>Software Supply Chain Security</em>?</a></h2>
+<blockquote>
+<p>A software supply chain is composed of the components, libraries, tools,
+and processes used to develop, build, and publish a software artifact.<sup class="footnote-reference"><a href="#wiki">1</a></sup></p>
+</blockquote>
+<p>Although not a recent notion, they have taken a growing focus due to the visibility of security vulnerabilities, particularly affecting the software supply chain (log4j, SolarWinds, etc.).</p>
+<p>Diagram of the software supply chain risks by the SLSA project<sup class="footnote-reference"><a href="#threats">2</a></sup>:</p>
+<p><img src="images/supply-chain-threats.svg" alt="The supply chains threats, SLSA project" /></p>
 <h2 id="about-this-guide"><a class="header" href="#about-this-guide">About this guide</a></h2>
-<p>This guide is aimed at both developers working on Rust programs for end-users and libraries developers.</p>
-<p>It focuses on currently available tooling for the Rust ecosystem, but also mentions more
-general advice or tooling. It has a hands-on focus and tries to provide actionnable items
-whenever possible. 
-It will also mention the current limitations and missing parts.
-It builds upon existing resources, like <a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">llogiq's blog post</a>.</p>
+<p>This guide is not a general introduction to the supply chain security topic.
+To learn more about it, you can
+have a look at introductions by vendors like <a href="https://www.redhat.com/en/topics/security/what-is-software-supply-chain-security">Red Hat</a>
+or <a href="https://snyk.io/series/software-supply-chain-security/">snyk</a>,
+or the <a href="https://openssf.org/">OpenSSF</a> and <a href="https://slsa.devd">SLSA</a>
+projects.</p>
+<p>It is aimed at Rust developers, whether working on libraries in the ecosystem or on programs
+for end-users, and some parts of the guide are only applicable to one of these situations.
+It focuses on currently available tooling for the Rust ecosystem and tries to provide actionable items
+whenever possible, and also mentions more general tooling and practices.</p>
+<p>Whenever possible, we will try to contextualize the content with the matching SLSA items,
+to help reach SLSA compliance.</p>
+<h2 id="other-resources"><a class="header" href="#other-resources">Other resources</a></h2>
+<ul>
+<li><a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">Comparing Rust supply chain safety tools</a> (May 2022, by llogiq)</li>
+</ul>
+<div class="footnote-definition" id="wiki"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://en.wikipedia.org/w/index.php?title=Software_supply_chain&amp;oldid=1148357822#cite_note-1"><em>Software Supply Chain</em></a> on Wikipedia (en)
+(under <em>Creative Commons Attribution-ShareAlike License 3.0</em>)</p>
+</div>
+<div class="footnote-definition" id="threats"><sup class="footnote-definition-label">2</sup>
+<p><em>Supply chain Levels for Software Artifacts</em>,
+<a href="https://slsa.dev/spec/v0.1/#supply-chain-threats">Supply chain threats</a>
+(under <em>Community Specification License 1.0</em>)</p>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="checklists"><a class="header" href="#checklists">Checklists</a></h1>
+<h3 id="library-development"><a class="header" href="#library-development">Library development</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Incomplete task</li>
+</ul>
+<h3 id="program-development"><a class="header" href="#program-development">Program development</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Incomplete task</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="using-dependencies"><a class="header" href="#using-dependencies">Using dependencies</a></h1>
-<p>cargo makes it really easy to use dependencies, so the Rust ecosystem tends
+<p><code>cargo</code> makes it really easy to use dependencies, so the Rust ecosystem tends
 to use a lot of them.
-This comes with security risks, and we'll see how we can mitigate them.</p>
-<h2 id="choosing-dependencies"><a class="header" href="#choosing-dependencies">Choosing dependencies</a></h2>
-<h3 id="risks"><a class="header" href="#risks">Risks</a></h3>
+Using dependencies is great but comes with security risks, and we'll see how we can mitigate them.</p>
+<h2 id="risks"><a class="header" href="#risks">Risks</a></h2>
+<p>What can happen with a dependency (either direct or somewhere in the dependency tree).</p>
+<h3 id="malicious-crates"><a class="header" href="#malicious-crates">Malicious crates</a></h3>
+<p>What do malicious crates do:</p>
 <ul>
-<li>vulnerabilities</li>
-<li>malicious crates or releases
+<li>Advertising</li>
+<li>Stealing crypto wallets on a developers system</li>
+<li>Compromising build systems</li>
+<li>Introducing backdoor in final products</li>
+<li>etc.</li>
+</ul>
+<p>In order to be affected, you don't need to push the new crate to your repository or even run your
+program locally. Only adding the crate to your local project can compromise the developer's system as
+the <code>build.rs</code> file and <a href="https://github.com/lucky/bad_actor_poc">proc-macros</a> allow arbitrary code execution.</p>
+<p>There are several types of malicious crates</p>
 <ul>
-<li>typo squatting (e.g. <a href="https://blog.rust-lang.org/2022/05/10/malicious-crate-rustdecimal.html">rustdecimal</a>)</li>
-<li>build.rs/proc macros risks</li>
+<li>
+<p>New crates which look like legitimate ones.
+Frequently using a name close to a
+widely used one, a practice called typosquatting.</p>
+<ul>
+<li>Such an incident already happened with the <a href="https://blog.rust-lang.org/2022/05/10/malicious-crate-rustdecimal.html">rustdecimal</a>
+crate, masquerading as the legitimate <code>rust_decimal</code> crate.
+It contained a payload targeting Gitlab CI platforms.</li>
 </ul>
 </li>
-<li>(lack of) maintenance</li>
-<li>license compliance (not directly linked to security but shared tooling)</li>
+<li>
+<p>New versions of legitimate crates, either by stealing publishing credentials or
+gaining publication access (after becoming a regular contributor, or sometimes just asking for it).</p>
+</li>
 </ul>
-<h3 id="minimizing-dependencies"><a class="header" href="#minimizing-dependencies">Minimizing dependencies</a></h3>
+<p>For now the Rust ecosystem has been relatively preserved for these attacks, but it's likely
+linked to the lower visibility and popularity (compared to <code>npm.org</code> for example),
+and not to intrinsic differences in the tooling or usage, so you need to be
+cautious anyway.</p>
+<p>The security of the cargo tooling and crates.io platform is currently being worked on
+and should continue to improve in the future.</p>
+<h3 id="vulnerable-crates"><a class="header" href="#vulnerable-crates">Vulnerable crates</a></h3>
+<p>A widely more common case is the presence of exploitable vulnerabilities in one of the dependencies.</p>
 <ul>
-<li>minimize dependencies (limit features, tools to explore dependency tree, etc.)</li>
-<li>number of dependencies != attack surface (cargo supply-chain)</li>
+<li>Contains a vulnerability
+<ul>
+<li>Unmaintained and not handling vulnerability reporting</li>
+</ul>
+</li>
+</ul>
+<h3 id="license-compliance"><a class="header" href="#license-compliance">License compliance</a></h3>
+<p>Side note: license compliance (not directly linked to security but shared tooling)</p>
+<h2 id="choosing-dependencies"><a class="header" href="#choosing-dependencies">Choosing dependencies</a></h2>
+<h3 id="minimizing-dependencies"><a class="header" href="#minimizing-dependencies">Minimizing dependencies</a></h3>
+<p>The safest dependency is the one you don't include.
+Be careful though, the number of dependencies is not always a good measurement of the attack surface
+(several crates maintained by the same team don't really multiply the risk).
+To get an overview of people and organizations with publish access to your dependencies,
+you can use the <a href="https://github.com/rust-secure-code/cargo-supply-chain">cargo supply-chain</a> tool.</p>
+<p>In order to minimize the number of dependencies, you can:</p>
+<ul>
+<li>Explore your dependency tree with <code>cargo tree</code>/<code>cargo supply-chain</code> to see if you spot something to remove</li>
+<li>Minimizing the dependency features.
+Crates tend to include a lot of features by default
+for convenience, but you can usually remove a part of the dependencies by only selecting the ones you actually need.</li>
 </ul>
 <h3 id="assessing-a-dependency"><a class="header" href="#assessing-a-dependency">Assessing a dependency</a></h3>
 <ul>
 <li>evaluate a crate
 <ul>
-<li><a href="https://gist.github.com/repi/d98bf9c202ec567fd67ef9e31152f43f">check list by Embark</a></li>
+<li><a href="https://gist.github.com/repi/d98bf9c202ec567fd67ef9e31152f43f">check-list by Embark</a></li>
 </ul>
 </li>
 <li>cargo crev</li>
 <li>cargo vet</li>
 <li><code>unsafe</code> code management (cargo-geiger, etc.)</li>
 </ul>
-<h2 id="maintaining-dependencies"><a class="header" href="#maintaining-dependencies">Maintaining dependencies</a></h2>
+<h2 id="maintaining-dependencies-over-time"><a class="header" href="#maintaining-dependencies-over-time">Maintaining dependencies over time</a></h2>
 <ul>
 <li>Cargo.lock for binaries</li>
 <li>vuln monitoring with cargo audit/deny</li>
@@ -260,7 +337,7 @@ known vulnerabilities in Rust programs.</p>
 <p>It won't cover generic deployment security as there are numerous options
 (containers, Windows msi/exe installers, Linux rpm/dpkg/etc. packages, etc.)
 but you should make sure you can verify that deployed artifacts'
-source and integrity (various artifact signature mechanism can help).</p>
+source and integrity (various artifact signature mechanisms can help).</p>
 <h2 id="audit-binaries"><a class="header" href="#audit-binaries">Audit binaries</a></h2>
 <p><code>cargo audit</code> has some capacities to audit Rust binaries for known
 vulnerabilities in their dependencies.</p>
