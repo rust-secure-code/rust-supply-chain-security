@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Detecting vulnerabilities - Rust Supply Chain Security Guide</title>
+        <title>Run in production - Rust Supply Chain Security Guide</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklists</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Signature</div></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html" class="active"><strong aria-hidden="true">6.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html" class="active"><strong aria-hidden="true">4.</strong> Run in production</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -158,19 +158,22 @@ known vulnerabilities in Rust programs.</p>
 but you should make sure you can verify that deployed artifacts'
 source and integrity (various artifact signature mechanisms can help).</p>
 <h2 id="audit-binaries"><a class="header" href="#audit-binaries">Audit binaries</a></h2>
-<p><code>cargo audit</code> has some capacities to audit Rust binaries for known
-vulnerabilities in their dependencies.</p>
-<p>It has two operation modes in this context:</p>
+<h3 id="crates"><a class="header" href="#crates">Crates</a></h3>
+<p><code>cargo audit</code> has some <a href="https://github.com/rustsec/rustsec/tree/main/cargo-audit#cargo-audit-bin-subcommand">capacities
+to audit Rust binaries</a> for known
+vulnerabilities in their dependencies.
+It has two operation modes in this context:</p>
 <ul>
-<li>Audit for known vulnerabilities in the dependency list embedded by <code>cargo-auditable</code>.</li>
-<li>Audit for known vulnerabilities in a dependency list extracted from panic messages.
+<li>If the binary was build using <code>cargo-auditable</code>, it will audit for known vulnerabilities in the embedded dependency list.</li>
+<li>If not, it will audit for known vulnerabilities in a dependency list extracted from panic messages.
 <ul>
-<li>This is incomplete as not all crates include panics</li>
-<li>Depending on the compilation options, panic messages may not be available</li>
+<li>This is incomplete as not all crates include panics.</li>
+<li>Depending on the compilation options, panic messages may not be available at all.</li>
 </ul>
 </li>
 </ul>
-<p>You can also use other tools like <a href="https://github.com/aquasecurity/trivy">trivy</a> which is able to look for
+<p><img src="images/audit.png" alt="cargo audit output on a binary file" /></p>
+<p>You can also use more generic tools like <a href="https://github.com/aquasecurity/trivy">trivy</a> which is able to look for
 known vulnerabilities in Rust binaries by using the same dependency list built by <code>cargo-auditable</code>.</p>
 <pre><code class="language-bash">$ trivy image --security-checks vuln docker-image
 2022-08-15T11:32:03.923+0300    INFO    Vulnerability scanning is enabled
@@ -189,14 +192,22 @@ Total: 1 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 1, CRITICAL: 0)
 │                 │                     │          │                   │               │ or a server.                                      │
 └─────────────────┴─────────────────────┴──────────┴───────────────────┴───────────────┴───────────────────────────────────────────────────┘
 </code></pre>
+<h3 id="toolchain"><a class="header" href="#toolchain">Toolchain</a></h3>
+<p>You might also want to know which version of the Rust toolchain was used to build a program, for example,
+to know if it's affected by a vulnerability in the standard library or the compiler itself.
+The compiler version <a href="https://github.com/rust-lang/rust/pull/97550">should be added</a> in a <code>.comment</code> section of the file in the future.
+Until then, you can look for the version in the strings included in the binary:</p>
+<pre><code class="language-shell">$ strings ~/.cargo/bin/rg | grep 'rustc version'
+clang LLVM (rustc version 1.68.0 (2c8cc3432 2023-03-06))
+</code></pre>
 <h2 id="audit-sboms"><a class="header" href="#audit-sboms">Audit SBOMs</a></h2>
-<p>TODO</p>
+<p>It is also possible to look for known vulnerabilities in a SBOM.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="sbom.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="build.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -207,7 +218,7 @@ Total: 1 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 1, CRITICAL: 0)
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="sbom.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="build.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Building for production - Rust Supply Chain Security Guide</title>
+        <title>Build for production - Rust Supply Chain Security Guide</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklists</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html" class="active"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Signature</div></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">6.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html" class="active"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -151,34 +151,65 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="build-for-production"><a class="header" href="#build-for-production">Build for production</a></h1>
-<h2 id="embed-dependency-list-in-binaries-cargo-auditable"><a class="header" href="#embed-dependency-list-in-binaries-cargo-auditable">Embed dependency list in binaries: <code>cargo auditable</code></a></h2>
+<h2 id="embed-dependency-list-in-binaries"><a class="header" href="#embed-dependency-list-in-binaries">Embed dependency list in binaries</a></h2>
 <ul>
-<li>cargo auditable</li>
+<li><code>cargo auditable</code></li>
 </ul>
 <p>limits</p>
 <h2 id="deterministic-builds"><a class="header" href="#deterministic-builds">Deterministic builds</a></h2>
 <ul>
-<li>cargo --locked</li>
-<li>rust-toolchain.toml</li>
+<li>
+<p>cargo --locked</p>
+</li>
+<li>
+<p>rust-toolchain.toml</p>
+</li>
+<li>
+<p>reproducible builds?</p>
+</li>
+<li>
+<p>github actions security</p>
+</li>
+<li>
+<p>network access in build.rs? sandboxing?</p>
+</li>
+<li>
+<p>ephemeral builder</p>
+</li>
 </ul>
-<h2 id="reproducible-builds"><a class="header" href="#reproducible-builds">Reproducible builds</a></h2>
-<p>??</p>
-<h2 id="other-advices"><a class="header" href="#other-advices">Other advices</a></h2>
-<ul>
-<li>github actions security</li>
-<li>network access in build.rs? sandboxing?
-SLSA: ephemeral builder</li>
-</ul>
+<h2 id="software-bill-of-materials"><a class="header" href="#software-bill-of-materials">Software Bill Of Materials</a></h2>
+<p>SBOMs for Rust programs usually need to be created from the sources
+(as the binaries don't contain enough information).
+Choosing a SBOM format is up to you, but they should be <em>mostly</em> interoperable.</p>
+<p><strong>Warning</strong>: Due to the way some <code>-sys</code> crate work, some C/C++ native
+library may be included in the binary but not visible through
+SBOM or vulnerability check tooling.<sup class="footnote-reference"><a href="#src-crates">1</a></sup></p>
+<h3 id="cyclonedx"><a class="header" href="#cyclonedx">CycloneDX</a></h3>
+<p>There is an official CycloneDX cargo subcommand to generate a SBOM
+from a Rust project source, <a href="https://crates.io/crates/cargo-cyclonedx"><code>cargo-cyclonedx</code></a></p>
+<pre><code class="language-bash">cargo cyclonedx --all --format json --manifest-path Cargo.toml
+</code></pre>
+<p>It understands cargo workspaces and produces a JSON (or XML) file.
+To aggregate several files, validate or sign them, you can use the <a href="https://github.com/CycloneDX/cyclonedx-cli"><code>cyclonedx-cli</code></a>.</p>
+<pre><code class="language-bash">cyclonedx merge --input-files *.json --output-file myprogram.cdx.json
+</code></pre>
+<h3 id="spdx"><a class="header" href="#spdx">SPDX</a></h3>
+<p><em>TODO</em></p>
+<h2 id="signature"><a class="header" href="#signature">Signature</a></h2>
+<p><em>TODO</em></p>
+<div class="footnote-definition" id="src-crates"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://internals.rust-lang.org/t/statically-linked-c-c-libraries/17175"><em>Statically-linked C/C++ libraries</em> on internals.rust-lang.org</a></p>
+</div>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="publish.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="maintain.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="sbom.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="run.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -188,11 +219,11 @@ SLSA: ephemeral builder</li>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="publish.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="maintain.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="sbom.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="run.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

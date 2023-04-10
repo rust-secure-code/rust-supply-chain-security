@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Using dependencies - Rust Supply Chain Security Guide</title>
+        <title>Manage dependencies - Rust Supply Chain Security Guide</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklists</a></li><li class="chapter-item expanded affix "><li class="part-title">Source</li><li class="chapter-item expanded "><a href="dependencies.html" class="active"><strong aria-hidden="true">1.</strong> Using dependencies</a></li><li class="chapter-item expanded "><a href="publish.html"><strong aria-hidden="true">2.</strong> Publishing a crate</a></li><li class="chapter-item expanded affix "><li class="part-title">CI/CD</li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Building for production</a></li><li class="chapter-item expanded "><a href="sbom.html"><strong aria-hidden="true">4.</strong> Producing a Software Bill Of Materials</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Signature</div></li><li class="chapter-item expanded affix "><li class="part-title">Run</li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">6.</strong> Detecting vulnerabilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Perspectives</li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html" class="active"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -150,7 +150,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="using-dependencies"><a class="header" href="#using-dependencies">Using dependencies</a></h1>
+                        <h1 id="manage-dependencies"><a class="header" href="#manage-dependencies">Manage dependencies</a></h1>
 <p><code>cargo</code> makes it really easy to use dependencies, so the Rust ecosystem tends
 to use a lot of them.
 Using dependencies is great but comes with security risks, and we'll see how we can mitigate them.</p>
@@ -200,8 +200,6 @@ and should continue to improve in the future.</p>
 </ul>
 </li>
 </ul>
-<h3 id="license-compliance"><a class="header" href="#license-compliance">License compliance</a></h3>
-<p>Side note: license compliance (not directly linked to security but shared tooling)</p>
 <h2 id="choosing-dependencies"><a class="header" href="#choosing-dependencies">Choosing dependencies</a></h2>
 <h3 id="minimizing-dependencies"><a class="header" href="#minimizing-dependencies">Minimizing dependencies</a></h3>
 <p>The safest dependency is the one you don't include.
@@ -217,28 +215,38 @@ Crates tend to include a lot of features by default
 for convenience, but you can usually remove a part of the dependencies by only selecting the ones you actually need.</li>
 </ul>
 <h3 id="assessing-a-dependency"><a class="header" href="#assessing-a-dependency">Assessing a dependency</a></h3>
-<ul>
-<li>evaluate a crate
-<ul>
-<li><a href="https://gist.github.com/repi/d98bf9c202ec567fd67ef9e31152f43f">check-list by Embark</a></li>
-</ul>
-</li>
-<li>cargo crev</li>
-<li>cargo vet</li>
-<li><code>unsafe</code> code management (cargo-geiger, etc.)</li>
-</ul>
+<p>When considering adding a dependency, there are a few things
+you can do to lower the different risks.
+Auditing the code is always an option, but is not scalable, especially including all future version upgrades.
+There are several initiatives intending to share the review
+work in the community,
+like <a href="https://github.com/crev-dev/cargo-crev"><code>cargo-crev</code></a> and <a href="https://mozilla.github.io/cargo-vet/"><code>cargo-vet</code></a>.</p>
+<!--
+TODO explain how to use cargo-vet
+-->
+<p>To prevent potential vulnerabilities in memory management, 
+a focus on <code>unsafe</code> code is often needed in code reviews.
+Tooling like <a href="https://github.com/rust-secure-code/cargo-geiger"><code>cargo-geiger</code></a> can help
+track the use of unsafe code in dependencies.</p>
+<p>There is a <a href="https://gist.github.com/repi/d98bf9c202ec567fd67ef9e31152f43f">very good checklist</a>
+covering many aspects of crate evaluation published (and used internally) by <a href="https://www.embark-studios.com/">Embark</a>.</p>
+<!--
+TODO include security-related parts of the check-list here?
+-->
 <h2 id="maintaining-dependencies-over-time"><a class="header" href="#maintaining-dependencies-over-time">Maintaining dependencies over time</a></h2>
-<ul>
-<li>Cargo.lock for binaries</li>
-<li>vuln monitoring with cargo audit/deny</li>
-<li>regular updates (to stay on maintained versions)
-<ul>
-<li>cargo outdated</li>
-<li>dependabot/github security alerts
-https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/</li>
-</ul>
-</li>
-</ul>
+<p>Once you have a dependency, you need to keep track of it
+over time.</p>
+<h3 id="vulnerability-and-maintenance-check"><a class="header" href="#vulnerability-and-maintenance-check">Vulnerability and maintenance check</a></h3>
+<p>You should also monitor for vulnerabilities and unmaintained crates using <code>cargo audit</code> or <code>cargo deny</code> regularly
+(e.g. with a daily CI job).
+Github's tooling](https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/)
+can also help
+track security vulnerabilities in your project.</p>
+<h3 id="regular-updates"><a class="header" href="#regular-updates">Regular updates</a></h3>
+<p>You should also try to stay up to date; this helps get bug fixes and improvements,
+and also avoids using unmaintained versions,
+ensuring to get easy access to security fixes in case of security vulnerability.
+Use <a href="https://github.com/kbknapp/cargo-outdated"><code>cargo outdated</code></a> to show possible updates.</p>
 
                     </main>
 
@@ -248,7 +256,7 @@ https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-t
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="publish.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="maintain.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -262,7 +270,7 @@ https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-t
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="publish.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="maintain.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
