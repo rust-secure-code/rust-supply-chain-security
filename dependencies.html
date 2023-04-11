@@ -157,14 +157,8 @@ Using dependencies is great but comes with security risks, and we'll see how we 
 <h2 id="risks"><a class="header" href="#risks">Risks</a></h2>
 <p>What can happen with a dependency (either direct or somewhere in the dependency tree).</p>
 <h3 id="malicious-crates"><a class="header" href="#malicious-crates">Malicious crates</a></h3>
-<p>What do malicious crates do:</p>
-<ul>
-<li>Advertising</li>
-<li>Stealing crypto wallets on a developers system</li>
-<li>Compromising build systems</li>
-<li>Introducing backdoor in final products</li>
-<li>etc.</li>
-</ul>
+<p>What do malicious crates can do: advertising, attacking developer systems,
+compromising build systems, introducing backdoor in final products, etc.</p>
 <p>In order to be affected, you don't need to push the new crate to your repository or even run your
 program locally. Only adding the crate to your local project can compromise the developer's system as
 the <code>build.rs</code> file and <a href="https://github.com/lucky/bad_actor_poc">proc-macros</a> allow arbitrary code execution.</p>
@@ -193,13 +187,7 @@ cautious anyway.</p>
 and should continue to improve in the future.</p>
 <h3 id="vulnerable-crates"><a class="header" href="#vulnerable-crates">Vulnerable crates</a></h3>
 <p>A widely more common case is the presence of exploitable vulnerabilities in one of the dependencies.</p>
-<ul>
-<li>Contains a vulnerability
-<ul>
-<li>Unmaintained and not handling vulnerability reporting</li>
-</ul>
-</li>
-</ul>
+<p>NOTE: Vulnerability tracking in dependencies is not easy as scoring is not always meaningful.</p>
 <h2 id="choosing-dependencies"><a class="header" href="#choosing-dependencies">Choosing dependencies</a></h2>
 <h3 id="minimizing-dependencies"><a class="header" href="#minimizing-dependencies">Minimizing dependencies</a></h3>
 <p>The safest dependency is the one you don't include.
