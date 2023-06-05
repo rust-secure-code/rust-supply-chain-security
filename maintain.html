@@ -118,10 +118,10 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/amousset/rust-supply-chain" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/amousset/rust-supply-chain-security" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/amousset/rust-supply-chain/edit/main/src/maintain.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/amousset/rust-supply-chain-security/edit/main/src/maintain.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -156,6 +156,7 @@ and help crates consumers.</p>
 <h2 id="cargolock"><a class="header" href="#cargolock"><code>Cargo.lock</code></a></h2>
 <p>If you develop a binary, it is important to commit the <code>Cargo.lock</code> file in your repository.
 This will help keep track of the exact versions used and ensure consistent builds.</p>
+<h2 id="rust-toolchaintoml"><a class="header" href="#rust-toolchaintoml"><code>rust-toolchain.toml</code></a></h2>
 <h2 id="features"><a class="header" href="#features">Features</a></h2>
 <ul>
 <li>allow users of the crate to control transitive dependencies depending on their needs, using features.</li>
@@ -164,6 +165,28 @@ This will help keep track of the exact versions used and ensure consistent build
 <ul>
 <li>current risks (no mfa, etc.)</li>
 <li>crates.io token</li>
+</ul>
+<h3 id="cratesio"><a class="header" href="#cratesio">crates.io</a></h3>
+<p>When using crates.io to distribute your program, you need to be careful about a few things.</p>
+<p>As crates.io uses GitHub as authentication layer, you should first properly secure your account using general best practices.
+In particular,
+make sure to have <a href="https://github.com/settings/security">two-factor authentication layer configured</a>
+(and avoid the SMS/Text message method).</p>
+<p>Apart from the Web interface, the other way to interact with crates.io is through its
+HTTP API,
+especially through cargo commands (<code>cargo publish</code>, etc.)
+that can run on the developer machine or on CI/CD systems, to automate publication. 
+These interactions are authenticated using a token created in the Web interface.</p>
+<p>You should crate a unique token for each use-case, and give it a minimal 
+set of permissions.
+If you had tokens crated before token scopes were introduced,
+you should delete them and recreate more restricted ones.</p>
+<p>When using this token in an automated context, it should be stored securely (e.g.
+as an <a href="https://docs.github.com/en/actions/security-guides/encrypted-secrets">encrypted secret</a> in GitHub)
+and passed as the
+<a href="https://doc.rust-lang.org/cargo/reference/config.html?highlight=CARGO_REGISTRY_TOKEN#credentials"><code>CARGO_REGISTRY_TOKEN</code></a> environment variable.</p>
+<p><img src="images/token.png" alt="New token form on crates.io" /></p>
+<ul>
 <li>publishing permissions on crates.io</li>
 </ul>
 <h2 id="vulnerabilities"><a class="header" href="#vulnerabilities">Vulnerabilities</a></h2>

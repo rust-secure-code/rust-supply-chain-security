@@ -119,7 +119,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/amousset/rust-supply-chain" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/amousset/rust-supply-chain-security" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -162,7 +162,7 @@ and processes used to develop, build, and publish a software artifact.<sup class
 To learn more about it, you can
 have a look at introductions by vendors like <a href="https://www.redhat.com/en/topics/security/what-is-software-supply-chain-security">Red Hat</a>
 or <a href="https://snyk.io/series/software-supply-chain-security/">snyk</a>,
-or the <a href="https://openssf.org/">OpenSSF</a> and <a href="https://slsa.devd">SLSA</a>
+or the <a href="https://openssf.org/">OpenSSF</a> and <a href="https://slsa.dev">SLSA</a>
 projects.</p>
 <p>It is aimed at Rust developers, whether working on libraries in the ecosystem or on programs
 for end-users, and some parts of the guide are only applicable to one of these situations.
@@ -172,6 +172,8 @@ whenever possible.</p>
 <ul>
 <li><a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">Comparing Rust supply chain safety tools</a> (May 2022, by llogiq)</li>
 <li><a href="https://www.bitfalter.com/rust-supply-chain-security">Rust Supply Chain Security</a> (April 2023, by Bitfalter)</li>
+<li><a href="https://anssi-fr.github.io/rust-guide/03_libraries.html">Secure Rust Guidelines</a> (May 2022, by ANSSI)</li>
+<li><a href="https://internals.rust-lang.org/t/about-supply-chain-attacks/14038">About Supply Chain Attacks</a> (February 2021, topic on IRLO)</li>
 </ul>
 <div class="footnote-definition" id="wiki"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/w/index.php?title=Software_supply_chain&amp;oldid=1148357822#cite_note-1"><em>Software Supply Chain</em></a> on Wikipedia (en)
@@ -281,9 +283,22 @@ Auditing the code is always an option, but is not scalable, especially including
 There are several initiatives intending to share the review
 work in the community,
 like <a href="https://github.com/crev-dev/cargo-crev"><code>cargo-crev</code></a> and <a href="https://mozilla.github.io/cargo-vet/"><code>cargo-vet</code></a>.</p>
-<!--
-TODO explain how to use cargo-vet
--->
+<h4 id="cargo-vet"><a class="header" href="#cargo-vet"><code>cargo vet</code></a></h4>
+<p><code>cargo vet</code> is a project started by Mozilla
+(and now also <a href="https://opensource.googleblog.com/2023/05/open-sourcing-our-rust-crate-audits.html">used by Google</a>)
+to formalize crate audits in an organization, and be able to share
+these with the community.</p>
+<p>As this topic is all a matter of trust, by default <code>cargo vet</code> works with local audits
+you make yourselves.
+You can also import audit results from selected sources you trust, in the form of a git repository
+URL.
+There is no centralized data source nor default trusted source.</p>
+<pre><code class="language-toml">[imports.mozilla]
+url = &quot;https://raw.githubusercontent.com/mozilla/supply-chain/main/audits.toml&quot;
+
+[imports.google]
+url = &quot;https://raw.githubusercontent.com/google/supply-chain/main/audits.toml&quot;
+</code></pre>
 <p>To prevent potential vulnerabilities in memory management, 
 a focus on <code>unsafe</code> code is often needed in code reviews.
 Tooling like <a href="https://github.com/rust-secure-code/cargo-geiger"><code>cargo-geiger</code></a> can help
@@ -313,6 +328,7 @@ and help crates consumers.</p>
 <h2 id="cargolock"><a class="header" href="#cargolock"><code>Cargo.lock</code></a></h2>
 <p>If you develop a binary, it is important to commit the <code>Cargo.lock</code> file in your repository.
 This will help keep track of the exact versions used and ensure consistent builds.</p>
+<h2 id="rust-toolchaintoml"><a class="header" href="#rust-toolchaintoml"><code>rust-toolchain.toml</code></a></h2>
 <h2 id="features"><a class="header" href="#features">Features</a></h2>
 <ul>
 <li>allow users of the crate to control transitive dependencies depending on their needs, using features.</li>
@@ -321,6 +337,28 @@ This will help keep track of the exact versions used and ensure consistent build
 <ul>
 <li>current risks (no mfa, etc.)</li>
 <li>crates.io token</li>
+</ul>
+<h3 id="cratesio"><a class="header" href="#cratesio">crates.io</a></h3>
+<p>When using crates.io to distribute your program, you need to be careful about a few things.</p>
+<p>As crates.io uses GitHub as authentication layer, you should first properly secure your account using general best practices.
+In particular,
+make sure to have <a href="https://github.com/settings/security">two-factor authentication layer configured</a>
+(and avoid the SMS/Text message method).</p>
+<p>Apart from the Web interface, the other way to interact with crates.io is through its
+HTTP API,
+especially through cargo commands (<code>cargo publish</code>, etc.)
+that can run on the developer machine or on CI/CD systems, to automate publication. 
+These interactions are authenticated using a token created in the Web interface.</p>
+<p>You should crate a unique token for each use-case, and give it a minimal 
+set of permissions.
+If you had tokens crated before token scopes were introduced,
+you should delete them and recreate more restricted ones.</p>
+<p>When using this token in an automated context, it should be stored securely (e.g.
+as an <a href="https://docs.github.com/en/actions/security-guides/encrypted-secrets">encrypted secret</a> in GitHub)
+and passed as the
+<a href="https://doc.rust-lang.org/cargo/reference/config.html?highlight=CARGO_REGISTRY_TOKEN#credentials"><code>CARGO_REGISTRY_TOKEN</code></a> environment variable.</p>
+<p><img src="images/token.png" alt="New token form on crates.io" /></p>
+<ul>
 <li>publishing permissions on crates.io</li>
 </ul>
 <h2 id="vulnerabilities"><a class="header" href="#vulnerabilities">Vulnerabilities</a></h2>
@@ -337,7 +375,7 @@ but you can use <a href="https://github.com/rust-secure-code/cargo-auditable"><c
 <pre><code class="language-shell">cargo auditable build --release
 </code></pre>
 <p>You can then see the embedded data with <a href="https://github.com/rust-secure-code/cargo-auditable/tree/master/rust-audit-info"><code>rust-audit-info</code></a>:</p>
-<pre><code class="language-shell">$ rust-audit-info target/debug/rudderc | jq
+<pre><code class="language-shell">$ rust-audit-info my_program | jq
 {
   &quot;packages&quot;: [
     {
