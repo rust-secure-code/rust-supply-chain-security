@@ -89,11 +89,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -168,6 +190,8 @@ projects.</p>
 for end-users, and some parts of the guide are only applicable to one of these situations.
 It focuses on currently available tooling for the Rust ecosystem and provides actionable items
 whenever possible.</p>
+<p>The <a href="./checklist.html">checklist</a> gives an overview of the recommendations from the whole guide
+and helps to prioritize the various topics.</p>
 <h2 id="other-resources"><a class="header" href="#other-resources">Other resources</a></h2>
 <ul>
 <li><a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">Comparing Rust supply chain safety tools</a> (May 2022, by llogiq)</li>
@@ -181,7 +205,7 @@ whenever possible.</p>
 </div>
 <div class="footnote-definition" id="threats"><sup class="footnote-definition-label">2</sup>
 <p><em>Supply chain Levels for Software Artifacts</em>,
-<a href="https://slsa.dev/spec/v0.1/#supply-chain-threats">Supply chain threats</a>
+<a href="https://slsa.dev/spec/v1.0/threats">Supply chain threats</a>
 (under <em>Community Specification License 1.0</em>)</p>
 </div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="checklist"><a class="header" href="#checklist">Checklist</a></h1>
@@ -189,7 +213,12 @@ whenever possible.</p>
 <h2 id="manage-dependencies"><a class="header" href="#manage-dependencies">Manage dependencies</a></h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
-🔒 New dependencies are vetted (<a href="dependencies.html#assessing-a-dependency">details</a>)</li>
+🔒 New dependencies are vetted (<a href="dependencies.html#assessing-a-dependency">details</a>)
+<ul>
+<li><input disabled="" type="checkbox"/>
+⭐️ Dependencies are reviewed using <code>cargo vet</code></li>
+</ul>
+</li>
 <li><input disabled="" type="checkbox"/>
 🔒 Transitive dependencies number is minimized by selecting only the required features (<a href="dependencies.html#minimizing-dependencies">details</a>)</li>
 <li><input disabled="" type="checkbox"/>
@@ -206,18 +235,25 @@ whenever possible.</p>
 <li><input disabled="" type="checkbox"/>
 🔒 Crate features allow to only include transitive dependencies required for a given use case (<a href="maintain.html#features">details</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Found vulnerabilities are reported to RustSec (<a href="maintain.html#vulnerabilities">details</a>)</li>
+🔒 Known vulnerabilities are reported to RustSec (<a href="maintain.html#vulnerabilities">details</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Publication access is kept safe (<a href="maintain.html#publication">details</a>)</li>
+🔒 Publication access to crates.io is kept safe (<a href="maintain.html#publication">details</a>)
+<ul>
+<li><input disabled="" type="checkbox"/>
+🔒 All tokens have limited rights</li>
+<li><input disabled="" type="checkbox"/>
+🔒 The GitHub accounts owning the crates have 2FA enabled</li>
+</ul>
+</li>
 </ul>
 <h2 id="build-for-production"><a class="header" href="#build-for-production">Build for production</a></h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
 🔒 Build uses <code>--locked</code> for reproducibility (<a href="build.html#deterministic-builds">details</a>)</li>
 <li><input disabled="" type="checkbox"/>
-👍 Build uses <code>cargo auditable</code> (<a href="build.html#embed-dependency-list-in-binaries">details</a>)</li>
+👍 Build uses <code>cargo auditable</code> (<a href="build.html#embed-dependency-list-in-binaries">details</a>) to embed dependencies information</li>
 <li><input disabled="" type="checkbox"/>
-ℹ️ Build provides a <em>Software Bill of Materials</em> (<a href="build.html#software-bill-of-materials">details</a>)</li>
+ℹ️ Build produces a <em>Software Bill of Materials</em> (<a href="build.html#software-bill-of-materials">details</a>)</li>
 </ul>
 <h2 id="run-in-production"><a class="header" href="#run-in-production">Run in production</a></h2>
 <ul>
@@ -227,21 +263,20 @@ whenever possible.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="manage-dependencies-1"><a class="header" href="#manage-dependencies-1">Manage dependencies</a></h1>
 <p><code>cargo</code> makes it really easy to use dependencies, so the Rust ecosystem tends
 to use a lot of them.
-Using dependencies is great but comes with security risks, and we'll see how we can mitigate them.</p>
+This page explains how to mitigate the risks that come with it.</p>
 <h2 id="risks"><a class="header" href="#risks">Risks</a></h2>
-<p>What can happen with a dependency (either direct or somewhere in the dependency tree).</p>
+<p>What can happen with a dependency (either direct or somewhere in the dependency tree)? </p>
+<h3 id="vulnerable-crates"><a class="header" href="#vulnerable-crates">Vulnerable crates</a></h3>
+<p>The most common risk is the presence of exploitable vulnerabilities in one of the dependencies.</p>
 <h3 id="malicious-crates"><a class="header" href="#malicious-crates">Malicious crates</a></h3>
-<p>What do malicious crates can do: advertising, attacking developer systems,
-compromising build systems, introducing backdoor in final products, etc.</p>
-<p>In order to be affected, you don't need to push the new crate to your repository or even run your
-program locally. Only adding the crate to your local project can compromise the developer's system as
-the <code>build.rs</code> file and <a href="https://github.com/lucky/bad_actor_poc">proc-macros</a> allow arbitrary code execution.</p>
-<p>There are several types of malicious crates</p>
+<p>The other main risk is an intentional attack introducing malicious behavior (advertising, attacking developer systems,
+compromising build systems, introducing backdoor in final products, etc.) in the 
+dependency tree.</p>
+<p>There are several types of malicious crates:</p>
 <ul>
 <li>
 <p>New crates which look like legitimate ones.
-Frequently using a name close to a
-widely used one, a practice called typosquatting.</p>
+Frequently using a name close to a widely used one (called typosquatting).</p>
 <ul>
 <li>Such an incident already happened with the <a href="https://blog.rust-lang.org/2022/05/10/malicious-crate-rustdecimal.html">rustdecimal</a>
 crate, masquerading as the legitimate <code>rust_decimal</code> crate.
@@ -250,20 +285,19 @@ It contained a payload targeting Gitlab CI platforms.</li>
 </li>
 <li>
 <p>New versions of legitimate crates, either by stealing publishing credentials or
-gaining publication access (after becoming a regular contributor, or sometimes just asking for it).</p>
+gaining publication access.</p>
 </li>
 </ul>
 <p>For now the Rust ecosystem has been relatively preserved for these attacks, but it's likely
 linked to the lower visibility and popularity (compared to <code>npm.org</code> for example),
 and not to intrinsic differences in the tooling or usage, so you need to be
 cautious anyway.</p>
-<p>The security of the cargo tooling and crates.io platform is currently being worked on
-and should continue to improve in the future.</p>
-<h3 id="vulnerable-crates"><a class="header" href="#vulnerable-crates">Vulnerable crates</a></h3>
-<p>A widely more common case is the presence of exploitable vulnerabilities in one of the dependencies.</p>
-<p>NOTE: Vulnerability tracking in dependencies is not easy as scoring is not always meaningful.</p>
-<h2 id="choosing-dependencies"><a class="header" href="#choosing-dependencies">Choosing dependencies</a></h2>
-<h3 id="minimizing-dependencies"><a class="header" href="#minimizing-dependencies">Minimizing dependencies</a></h3>
+<p>Also be conscious that in order to be affected, you don't need to push the new crate to your repository or even run your
+program locally.
+Only adding the crate to your local project can compromise the developer's system as
+the <code>build.rs</code> file and <a href="https://github.com/lucky/bad_actor_poc">proc-macros</a> allow arbitrary code execution.</p>
+<h2 id="choose-dependencies"><a class="header" href="#choose-dependencies">Choose dependencies</a></h2>
+<h3 id="minimize-dependencies"><a class="header" href="#minimize-dependencies">Minimize dependencies</a></h3>
 <p>The safest dependency is the one you don't include.
 Be careful though, the number of dependencies is not always a good measurement of the attack surface
 (several crates maintained by the same team don't really multiply the risk).
@@ -276,7 +310,7 @@ you can use the <a href="https://github.com/rust-secure-code/cargo-supply-chain"
 Crates tend to include a lot of features by default
 for convenience, but you can usually remove a part of the dependencies by only selecting the ones you actually need.</li>
 </ul>
-<h3 id="assessing-a-dependency"><a class="header" href="#assessing-a-dependency">Assessing a dependency</a></h3>
+<h3 id="assess-a-dependency"><a class="header" href="#assess-a-dependency">Assess a dependency</a></h3>
 <p>When considering adding a dependency, there are a few things
 you can do to lower the different risks.
 Auditing the code is always an option, but is not scalable, especially including all future version upgrades.
@@ -308,7 +342,7 @@ covering many aspects of crate evaluation published (and used internally) by <a 
 <!--
 TODO include security-related parts of the check-list here?
 -->
-<h2 id="maintaining-dependencies-over-time"><a class="header" href="#maintaining-dependencies-over-time">Maintaining dependencies over time</a></h2>
+<h2 id="maintain-dependencies-over-time"><a class="header" href="#maintain-dependencies-over-time">Maintain dependencies over time</a></h2>
 <p>Once you have a dependency, you need to keep track of it
 over time.</p>
 <h3 id="vulnerability-and-maintenance-check"><a class="header" href="#vulnerability-and-maintenance-check">Vulnerability and maintenance check</a></h3>
@@ -331,13 +365,12 @@ This will help keep track of the exact versions used and ensure consistent build
 <h2 id="rust-toolchaintoml"><a class="header" href="#rust-toolchaintoml"><code>rust-toolchain.toml</code></a></h2>
 <h2 id="features"><a class="header" href="#features">Features</a></h2>
 <ul>
-<li>allow users of the crate to control transitive dependencies depending on their needs, using features.</li>
+<li>Allow users of the crate to control transitive dependencies depending on their needs, using features.</li>
 </ul>
+<h2 id="maintaining-a-crate-building-cc-code"><a class="header" href="#maintaining-a-crate-building-cc-code">Maintaining a crate building C/C++ code</a></h2>
+<h3 id="use-a-dedicated-crate-if-possible"><a class="header" href="#use-a-dedicated-crate-if-possible">Use a dedicated crate if possible</a></h3>
+<h3 id="provide-flags-allowing-to-select-the-behavior"><a class="header" href="#provide-flags-allowing-to-select-the-behavior">Provide flags allowing to select the behavior</a></h3>
 <h2 id="publication"><a class="header" href="#publication">Publication</a></h2>
-<ul>
-<li>current risks (no mfa, etc.)</li>
-<li>crates.io token</li>
-</ul>
 <h3 id="cratesio"><a class="header" href="#cratesio">crates.io</a></h3>
 <p>When using crates.io to distribute your program, you need to be careful about a few things.</p>
 <p>As crates.io uses GitHub as authentication layer, you should first properly secure your account using general best practices.
@@ -350,7 +383,7 @@ especially through cargo commands (<code>cargo publish</code>, etc.)
 that can run on the developer machine or on CI/CD systems, to automate publication. 
 These interactions are authenticated using a token created in the Web interface.</p>
 <p>You should crate a unique token for each use-case, and give it a minimal 
-set of permissions.
+set of permissions. Setting an expiration date allows forcing a regular rotation of tokens. For a one-shot operation, set a one-day validity or even revoke the token just after usage.
 If you had tokens crated before token scopes were introduced,
 you should delete them and recreate more restricted ones.</p>
 <p>When using this token in an automated context, it should be stored securely (e.g.
@@ -362,6 +395,11 @@ and passed as the
 <li>publishing permissions on crates.io</li>
 </ul>
 <h2 id="vulnerabilities"><a class="header" href="#vulnerabilities">Vulnerabilities</a></h2>
+<p>If you find vulnerabilities affecting you crate, or if vulnerabilities are reported to
+your bug tracker, reporting them to RustSec will get your users warned if they use
+any kind of vulnerability detection on their dependencies.</p>
+<p>Reporting to RustSec's advisory-db is enough as the advisories will get imported
+by GitHub into their advisory database (allowing alerts by dependabot for example).</p>
 <ul>
 <li>report vulns to rustsec</li>
 <li>they will automatically get to github</li>

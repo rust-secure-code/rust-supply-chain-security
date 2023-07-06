@@ -88,11 +88,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -155,7 +177,12 @@
 <h2 id="manage-dependencies"><a class="header" href="#manage-dependencies">Manage dependencies</a></h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
-🔒 New dependencies are vetted (<a href="dependencies.html#assessing-a-dependency">details</a>)</li>
+🔒 New dependencies are vetted (<a href="dependencies.html#assessing-a-dependency">details</a>)
+<ul>
+<li><input disabled="" type="checkbox"/>
+⭐️ Dependencies are reviewed using <code>cargo vet</code></li>
+</ul>
+</li>
 <li><input disabled="" type="checkbox"/>
 🔒 Transitive dependencies number is minimized by selecting only the required features (<a href="dependencies.html#minimizing-dependencies">details</a>)</li>
 <li><input disabled="" type="checkbox"/>
@@ -172,18 +199,25 @@
 <li><input disabled="" type="checkbox"/>
 🔒 Crate features allow to only include transitive dependencies required for a given use case (<a href="maintain.html#features">details</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Found vulnerabilities are reported to RustSec (<a href="maintain.html#vulnerabilities">details</a>)</li>
+🔒 Known vulnerabilities are reported to RustSec (<a href="maintain.html#vulnerabilities">details</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Publication access is kept safe (<a href="maintain.html#publication">details</a>)</li>
+🔒 Publication access to crates.io is kept safe (<a href="maintain.html#publication">details</a>)
+<ul>
+<li><input disabled="" type="checkbox"/>
+🔒 All tokens have limited rights</li>
+<li><input disabled="" type="checkbox"/>
+🔒 The GitHub accounts owning the crates have 2FA enabled</li>
+</ul>
+</li>
 </ul>
 <h2 id="build-for-production"><a class="header" href="#build-for-production">Build for production</a></h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
 🔒 Build uses <code>--locked</code> for reproducibility (<a href="build.html#deterministic-builds">details</a>)</li>
 <li><input disabled="" type="checkbox"/>
-👍 Build uses <code>cargo auditable</code> (<a href="build.html#embed-dependency-list-in-binaries">details</a>)</li>
+👍 Build uses <code>cargo auditable</code> (<a href="build.html#embed-dependency-list-in-binaries">details</a>) to embed dependencies information</li>
 <li><input disabled="" type="checkbox"/>
-ℹ️ Build provides a <em>Software Bill of Materials</em> (<a href="build.html#software-bill-of-materials">details</a>)</li>
+ℹ️ Build produces a <em>Software Bill of Materials</em> (<a href="build.html#software-bill-of-materials">details</a>)</li>
 </ul>
 <h2 id="run-in-production"><a class="header" href="#run-in-production">Run in production</a></h2>
 <ul>

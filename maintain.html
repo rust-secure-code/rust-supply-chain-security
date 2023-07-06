@@ -88,11 +88,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -159,13 +181,12 @@ This will help keep track of the exact versions used and ensure consistent build
 <h2 id="rust-toolchaintoml"><a class="header" href="#rust-toolchaintoml"><code>rust-toolchain.toml</code></a></h2>
 <h2 id="features"><a class="header" href="#features">Features</a></h2>
 <ul>
-<li>allow users of the crate to control transitive dependencies depending on their needs, using features.</li>
+<li>Allow users of the crate to control transitive dependencies depending on their needs, using features.</li>
 </ul>
+<h2 id="maintaining-a-crate-building-cc-code"><a class="header" href="#maintaining-a-crate-building-cc-code">Maintaining a crate building C/C++ code</a></h2>
+<h3 id="use-a-dedicated-crate-if-possible"><a class="header" href="#use-a-dedicated-crate-if-possible">Use a dedicated crate if possible</a></h3>
+<h3 id="provide-flags-allowing-to-select-the-behavior"><a class="header" href="#provide-flags-allowing-to-select-the-behavior">Provide flags allowing to select the behavior</a></h3>
 <h2 id="publication"><a class="header" href="#publication">Publication</a></h2>
-<ul>
-<li>current risks (no mfa, etc.)</li>
-<li>crates.io token</li>
-</ul>
 <h3 id="cratesio"><a class="header" href="#cratesio">crates.io</a></h3>
 <p>When using crates.io to distribute your program, you need to be careful about a few things.</p>
 <p>As crates.io uses GitHub as authentication layer, you should first properly secure your account using general best practices.
@@ -178,7 +199,7 @@ especially through cargo commands (<code>cargo publish</code>, etc.)
 that can run on the developer machine or on CI/CD systems, to automate publication. 
 These interactions are authenticated using a token created in the Web interface.</p>
 <p>You should crate a unique token for each use-case, and give it a minimal 
-set of permissions.
+set of permissions. Setting an expiration date allows forcing a regular rotation of tokens. For a one-shot operation, set a one-day validity or even revoke the token just after usage.
 If you had tokens crated before token scopes were introduced,
 you should delete them and recreate more restricted ones.</p>
 <p>When using this token in an automated context, it should be stored securely (e.g.
@@ -190,6 +211,11 @@ and passed as the
 <li>publishing permissions on crates.io</li>
 </ul>
 <h2 id="vulnerabilities"><a class="header" href="#vulnerabilities">Vulnerabilities</a></h2>
+<p>If you find vulnerabilities affecting you crate, or if vulnerabilities are reported to
+your bug tracker, reporting them to RustSec will get your users warned if they use
+any kind of vulnerability detection on their dependencies.</p>
+<p>Reporting to RustSec's advisory-db is enough as the advisories will get imported
+by GitHub into their advisory database (allowing alerts by dependabot for example).</p>
 <ul>
 <li>report vulns to rustsec</li>
 <li>they will automatically get to github</li>

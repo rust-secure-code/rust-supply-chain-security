@@ -88,11 +88,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -153,21 +175,20 @@
                         <h1 id="manage-dependencies"><a class="header" href="#manage-dependencies">Manage dependencies</a></h1>
 <p><code>cargo</code> makes it really easy to use dependencies, so the Rust ecosystem tends
 to use a lot of them.
-Using dependencies is great but comes with security risks, and we'll see how we can mitigate them.</p>
+This page explains how to mitigate the risks that come with it.</p>
 <h2 id="risks"><a class="header" href="#risks">Risks</a></h2>
-<p>What can happen with a dependency (either direct or somewhere in the dependency tree).</p>
+<p>What can happen with a dependency (either direct or somewhere in the dependency tree)? </p>
+<h3 id="vulnerable-crates"><a class="header" href="#vulnerable-crates">Vulnerable crates</a></h3>
+<p>The most common risk is the presence of exploitable vulnerabilities in one of the dependencies.</p>
 <h3 id="malicious-crates"><a class="header" href="#malicious-crates">Malicious crates</a></h3>
-<p>What do malicious crates can do: advertising, attacking developer systems,
-compromising build systems, introducing backdoor in final products, etc.</p>
-<p>In order to be affected, you don't need to push the new crate to your repository or even run your
-program locally. Only adding the crate to your local project can compromise the developer's system as
-the <code>build.rs</code> file and <a href="https://github.com/lucky/bad_actor_poc">proc-macros</a> allow arbitrary code execution.</p>
-<p>There are several types of malicious crates</p>
+<p>The other main risk is an intentional attack introducing malicious behavior (advertising, attacking developer systems,
+compromising build systems, introducing backdoor in final products, etc.) in the 
+dependency tree.</p>
+<p>There are several types of malicious crates:</p>
 <ul>
 <li>
 <p>New crates which look like legitimate ones.
-Frequently using a name close to a
-widely used one, a practice called typosquatting.</p>
+Frequently using a name close to a widely used one (called typosquatting).</p>
 <ul>
 <li>Such an incident already happened with the <a href="https://blog.rust-lang.org/2022/05/10/malicious-crate-rustdecimal.html">rustdecimal</a>
 crate, masquerading as the legitimate <code>rust_decimal</code> crate.
@@ -176,20 +197,19 @@ It contained a payload targeting Gitlab CI platforms.</li>
 </li>
 <li>
 <p>New versions of legitimate crates, either by stealing publishing credentials or
-gaining publication access (after becoming a regular contributor, or sometimes just asking for it).</p>
+gaining publication access.</p>
 </li>
 </ul>
 <p>For now the Rust ecosystem has been relatively preserved for these attacks, but it's likely
 linked to the lower visibility and popularity (compared to <code>npm.org</code> for example),
 and not to intrinsic differences in the tooling or usage, so you need to be
 cautious anyway.</p>
-<p>The security of the cargo tooling and crates.io platform is currently being worked on
-and should continue to improve in the future.</p>
-<h3 id="vulnerable-crates"><a class="header" href="#vulnerable-crates">Vulnerable crates</a></h3>
-<p>A widely more common case is the presence of exploitable vulnerabilities in one of the dependencies.</p>
-<p>NOTE: Vulnerability tracking in dependencies is not easy as scoring is not always meaningful.</p>
-<h2 id="choosing-dependencies"><a class="header" href="#choosing-dependencies">Choosing dependencies</a></h2>
-<h3 id="minimizing-dependencies"><a class="header" href="#minimizing-dependencies">Minimizing dependencies</a></h3>
+<p>Also be conscious that in order to be affected, you don't need to push the new crate to your repository or even run your
+program locally.
+Only adding the crate to your local project can compromise the developer's system as
+the <code>build.rs</code> file and <a href="https://github.com/lucky/bad_actor_poc">proc-macros</a> allow arbitrary code execution.</p>
+<h2 id="choose-dependencies"><a class="header" href="#choose-dependencies">Choose dependencies</a></h2>
+<h3 id="minimize-dependencies"><a class="header" href="#minimize-dependencies">Minimize dependencies</a></h3>
 <p>The safest dependency is the one you don't include.
 Be careful though, the number of dependencies is not always a good measurement of the attack surface
 (several crates maintained by the same team don't really multiply the risk).
@@ -202,7 +222,7 @@ you can use the <a href="https://github.com/rust-secure-code/cargo-supply-chain"
 Crates tend to include a lot of features by default
 for convenience, but you can usually remove a part of the dependencies by only selecting the ones you actually need.</li>
 </ul>
-<h3 id="assessing-a-dependency"><a class="header" href="#assessing-a-dependency">Assessing a dependency</a></h3>
+<h3 id="assess-a-dependency"><a class="header" href="#assess-a-dependency">Assess a dependency</a></h3>
 <p>When considering adding a dependency, there are a few things
 you can do to lower the different risks.
 Auditing the code is always an option, but is not scalable, especially including all future version upgrades.
@@ -234,7 +254,7 @@ covering many aspects of crate evaluation published (and used internally) by <a 
 <!--
 TODO include security-related parts of the check-list here?
 -->
-<h2 id="maintaining-dependencies-over-time"><a class="header" href="#maintaining-dependencies-over-time">Maintaining dependencies over time</a></h2>
+<h2 id="maintain-dependencies-over-time"><a class="header" href="#maintain-dependencies-over-time">Maintain dependencies over time</a></h2>
 <p>Once you have a dependency, you need to keep track of it
 over time.</p>
 <h3 id="vulnerability-and-maintenance-check"><a class="header" href="#vulnerability-and-maintenance-check">Vulnerability and maintenance check</a></h3>
