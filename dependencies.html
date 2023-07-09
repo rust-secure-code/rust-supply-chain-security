@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
         
-        <meta name="description" content="A guide to securing the software supply chain of Rust programs and librairies">
+        <meta name="description" content="A guide to securing the software supply chain of Rust programs and libraries">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
@@ -229,6 +229,16 @@ Auditing the code is always an option, but is not scalable, especially including
 There are several initiatives intending to share the review
 work in the community,
 like <a href="https://github.com/crev-dev/cargo-crev"><code>cargo-crev</code></a> and <a href="https://mozilla.github.io/cargo-vet/"><code>cargo-vet</code></a>.</p>
+<p>Note: When reviewing a crate, don't use the repository as a reference as it may diverge
+from the content uploaded to crates.io.
+Instead, you can download the crate (using URLs like: https://crates.io/api/v1/crates/serde/1.0.0/download),
+use the source view on docs.rs (or an external service like <a href="https://sourcegraph.com/search">Sourcegraph</a>
+(<a href="https://sourcegraph.com/crates/regex@v1.1.0/-/blob/src/compile.rs">example</a>),
+used by <code>cargo vet</code> for reviews, which is more convenient for comparing versions).</p>
+<p>Note: Be careful when opening untrusted crates in your editor/IDE,
+as even only opening it can run arbitrary code in procedural macros.
+Use a simple text editor (without LSP-like features) or make use of
+features like the <a href="https://code.visualstudio.com/docs/editor/workspace-trust">restricted mode</a> in VSCode.</p>
 <h4 id="cargo-vet"><a class="header" href="#cargo-vet"><code>cargo vet</code></a></h4>
 <p><code>cargo vet</code> is a project started by Mozilla
 (and now also <a href="https://opensource.googleblog.com/2023/05/open-sourcing-our-rust-crate-audits.html">used by Google</a>)

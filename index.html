@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
         
-        <meta name="description" content="A guide to securing the software supply chain of Rust programs and librairies">
+        <meta name="description" content="A guide to securing the software supply chain of Rust programs and libraries">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
@@ -178,22 +178,22 @@
 <p>A software supply chain is composed of the components, libraries, tools,
 and processes used to develop, build, and publish a software artifact.<sup class="footnote-reference"><a href="#wiki">1</a></sup></p>
 </blockquote>
-<p>Although not a recent notion, they have taken a growing focus due to the visibility of security vulnerabilities, particularly affecting the software supply chain (log4j, SolarWinds, etc.).</p>
-<p>Diagram of the software supply chain risks by the SLSA project<sup class="footnote-reference"><a href="#threats">2</a></sup>:</p>
+<p>Although not a recent notion, it has taken a growing focus due to the visibility of security vulnerabilities affecting the software supply chain (log4j, SolarWinds, etc.).</p>
+<p>Diagram of the software supply chain risks (by the SLSA project)<sup class="footnote-reference"><a href="#threats">2</a></sup>:</p>
 <p><img src="images/supply-chain-threats.svg" alt="The supply chains threats, SLSA project" /></p>
 <h2 id="about-this-guide"><a class="header" href="#about-this-guide">About this guide</a></h2>
-<p>This guide is not a general introduction to the supply chain security topic.
+<p>This guide is not a general introduction to the software supply chain security topic.
 To learn more about it, you can
 have a look at introductions by vendors like <a href="https://www.redhat.com/en/topics/security/what-is-software-supply-chain-security">Red Hat</a>
 or <a href="https://snyk.io/series/software-supply-chain-security/">snyk</a>,
 or the <a href="https://openssf.org/">OpenSSF</a> and <a href="https://slsa.dev">SLSA</a>
 projects.</p>
 <p>It is aimed at Rust developers, whether working on libraries in the ecosystem or on programs
-for end-users, and some parts of the guide are only applicable to one of these situations.
+for end-users (and some parts of the guide are only applicable to one of these situations).
 It focuses on currently available tooling for the Rust ecosystem and provides actionable items
 whenever possible.</p>
 <p>The <a href="./checklist.html">checklist</a> gives an overview of the recommendations from the whole guide
-and helps to prioritize the various topics.</p>
+and helps to prioritize the different topics.</p>
 <h2 id="other-resources"><a class="header" href="#other-resources">Other resources</a></h2>
 <ul>
 <li><a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">Comparing Rust supply chain safety tools</a> (May 2022, by llogiq)</li>
