@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -172,11 +172,22 @@
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <h2 id="what-is-software-supply-chain-security"><a class="header" href="#what-is-software-supply-chain-security">What is <em>Software Supply Chain Security</em>?</a></h2>
+<p>The <em>Software Supply Chain</em> has been named as an analogy with the &quot;physical&quot;
+<a href="https://en.wikipedia.org/wiki/Supply_chain">supply chain</a>,
+that goes from raw materials to end consumers, through a system made of multiple links
+(factories, delivery, etc.).</p>
 <blockquote>
 <p>A software supply chain is composed of the components, libraries, tools,
 and processes used to develop, build, and publish a software artifact.<sup class="footnote-reference"><a href="#wiki">1</a></sup></p>
 </blockquote>
-<p>Although not a recent notion, it has taken a growing focus due to the visibility of security vulnerabilities affecting the software supply chain (log4j, SolarWinds, etc.).</p>
+<p>In the Rust context, it means more specifically the chain from the sources,
+the dependencies (whether on crates.io or not),
+build toolchain (<code>rustc</code>, <code>cargo</code>), CI/CD platforms, binary distribution, etc.</p>
+<p>The software supply chain has been an increasingly frequent target
+in recent years, as it allows attacking well-secured systems
+by focusing on weaker links in their supply chain,
+or attacking multiple targets with a single entry point.
+In response, </p>
 <p>Diagram of the software supply chain risks (by the SLSA project)<sup class="footnote-reference"><a href="#threats">2</a></sup>:</p>
 <p><img src="images/supply-chain-threats.svg" alt="The supply chains threats, SLSA project" /></p>
 <h2 id="about-this-guide"><a class="header" href="#about-this-guide">About this guide</a></h2>
@@ -192,13 +203,6 @@ It focuses on currently available tooling for the Rust ecosystem and provides ac
 whenever possible.</p>
 <p>The <a href="./checklist.html">checklist</a> gives an overview of the recommendations from the whole guide
 and helps to prioritize the different topics.</p>
-<h2 id="other-resources"><a class="header" href="#other-resources">Other resources</a></h2>
-<ul>
-<li><a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">Comparing Rust supply chain safety tools</a> (May 2022, by llogiq)</li>
-<li><a href="https://www.bitfalter.com/rust-supply-chain-security">Rust Supply Chain Security</a> (April 2023, by Bitfalter)</li>
-<li><a href="https://anssi-fr.github.io/rust-guide/03_libraries.html">Secure Rust Guidelines</a> (May 2022, by ANSSI)</li>
-<li><a href="https://internals.rust-lang.org/t/about-supply-chain-attacks/14038">About Supply Chain Attacks</a> (February 2021, topic on IRLO)</li>
-</ul>
 <div class="footnote-definition" id="wiki"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/w/index.php?title=Software_supply_chain&amp;oldid=1148357822#cite_note-1"><em>Software Supply Chain</em></a> on Wikipedia (en)
 (under <em>Creative Commons Attribution-ShareAlike License 3.0</em>)</p>
@@ -213,31 +217,28 @@ and helps to prioritize the different topics.</p>
 <h2 id="manage-dependencies"><a class="header" href="#manage-dependencies">Manage dependencies</a></h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
-🔒 Dependencies are vetted (<a href="dependencies.html#assessing-a-dependency">details</a>)
-<ul>
+🔒 Dependencies are vetted (<a href="dependencies.html#assessing-a-dependency">DEPS-ASSESS</a>)</li>
 <li><input disabled="" type="checkbox"/>
-⭐️ Dependencies are reviewed using <code>cargo vet</code></li>
-</ul>
-</li>
+⭐️ Dependencies are reviewed using <code>cargo vet</code> (<a href="dependencies.html#assessing-a-dependency">DEPS-VET</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Transitive dependencies number is minimized by selecting only the required features (<a href="dependencies.html#minimizing-dependencies">details</a>)</li>
+🔒 Transitive dependencies number is minimized by selecting only the required features (<a href="dependencies.html#minimizing-dependencies">DEPS-FEATURES</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Dependencies are up-to-date (<a href="dependencies.html#regular-updates">details</a>)</li>
+🔒 Dependencies are up-to-date (<a href="dependencies.html#regular-updates">DEPS-UPDATES</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Known vulnerabilities and unmaintained crates are regularly checked (<a href="dependencies.html#vulnerability-and-maintenance-check">details</a>)</li>
+🔒 Known vulnerabilities and unmaintained crates are regularly checked (<a href="dependencies.html#vulnerability-and-maintenance-check">DEPS-VULNS</a>)</li>
 </ul>
 <h2 id="maintain-a-crate"><a class="header" href="#maintain-a-crate">Maintain a crate</a></h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
-🔒 The <code>Cargo.lock</code> file is committed to your repository <em>(when developing binary programs)</em> (<a href="maintain.html#cargolock">details</a>)</li>
+🔒 The <code>Cargo.lock</code> file is committed to your repository <em>(when developing binary programs)</em> (<a href="maintain.html#cargolock">MAINTAIN-LOCK</a>)</li>
 <li><input disabled="" type="checkbox"/>
-👍 The <code>rust-toolchain.toml</code> file is committed to your repository <em>(when developing binary programs)</em> (<a href="">details</a>)</li>
+👍 The <code>rust-toolchain.toml</code> file is committed to your repository <em>(when developing binary programs)</em> (<a href="">MAINTAIN-TOOLCHAIN</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Crate features allow to only include transitive dependencies required for a given use case (<a href="maintain.html#features">details</a>)</li>
+🔒 Crate features allow to only include transitive dependencies required for a given use case (<a href="maintain.html#features">MAINTAIN-FEATURES</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Known vulnerabilities are reported to RustSec (<a href="maintain.html#vulnerabilities">details</a>)</li>
+🔒 Known vulnerabilities are reported to RustSec (<a href="maintain.html#vulnerabilities">MAINTAIN-VULNS</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Publication access to crates.io is kept safe (<a href="maintain.html#publication">details</a>)
+🔒 Publication access to crates.io is kept safe (<a href="maintain.html#publication">MAINTAIN-CRATESIO</a>)
 <ul>
 <li><input disabled="" type="checkbox"/>
 🔒 All tokens have limited rights</li>
@@ -249,30 +250,30 @@ and helps to prioritize the different topics.</p>
 <h2 id="build-for-production"><a class="header" href="#build-for-production">Build for production</a></h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
-🔒 Build uses <code>--locked</code> for reproducibility (<a href="build.html#deterministic-builds">details</a>)</li>
+🔒 Build uses <code>--locked</code> for reproducibility (<a href="build.html#deterministic-builds">BUILD-LOCKED</a>)</li>
 <li><input disabled="" type="checkbox"/>
-👍 Build uses <code>cargo auditable</code> (<a href="build.html#embed-dependency-list-in-binaries">details</a>) to embed dependencies information</li>
+👍 Build uses <code>cargo auditable</code> (<a href="build.html#embed-dependency-list-in-binaries">BUILD-AUDITABLE</a>) to embed dependencies information</li>
 <li><input disabled="" type="checkbox"/>
-ℹ️ Build produces a <em>Software Bill of Materials</em> (<a href="build.html#software-bill-of-materials">details</a>)</li>
+ℹ️ Build produces a <em>Software Bill of Materials</em> (<a href="build.html#software-bill-of-materials">BUILD-SBOM</a>)</li>
 </ul>
 <h2 id="run-in-production"><a class="header" href="#run-in-production">Run in production</a></h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
-⭐️ Production artifacts are regularly checked for vulnerabilities (<a href="run.html#audit-binaries">details</a>)</li>
+⭐️ Production artifacts are regularly checked for vulnerabilities (<a href="run.html#audit-binaries">PROD-AUDIT</a>)</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="manage-dependencies-1"><a class="header" href="#manage-dependencies-1">Manage dependencies</a></h1>
-<p><code>cargo</code> makes it really easy to use dependencies, so the Rust ecosystem tends
+<p><code>cargo</code> makes it really easy to use dependencies, so the programs in the Rust ecosystem tend
 to use a lot of them.
-This page explains how to mitigate the risks that come with it.</p>
-<h2 id="risks"><a class="header" href="#risks">Risks</a></h2>
-<p>What can happen with a dependency (either direct or somewhere in the dependency tree)? </p>
-<h3 id="vulnerable-crates"><a class="header" href="#vulnerable-crates">Vulnerable crates</a></h3>
-<p>The most common risk is the presence of exploitable vulnerabilities in one of the dependencies.</p>
-<h3 id="malicious-crates"><a class="header" href="#malicious-crates">Malicious crates</a></h3>
+Despite the obvious advantages for the developers, this also comes with
+specific risks.
+Let's start by describing them, either direct or somewhere in the dependency tree.</p>
+<p>The most common risk is the presence of vulnerabilities in one of the dependencies,
+like <a href="https://en.wikipedia.org/wiki/Log4Shell">Log4Shell</a> in the Java <code>log4j</code> logging library,
+containing an exploitable remote code execution.</p>
 <p>The other main risk is an intentional attack introducing malicious behavior (advertising, attacking developer systems,
 compromising build systems, introducing backdoor in final products, etc.) in the 
-dependency tree.</p>
-<p>There are several types of malicious crates:</p>
+dependency tree.
+There are several possible kinds of malicious crates:</p>
 <ul>
 <li>
 <p>New crates which look like legitimate ones.
@@ -280,37 +281,36 @@ Frequently using a name close to a widely used one (called typosquatting).</p>
 <ul>
 <li>Such an incident already happened with the <a href="https://blog.rust-lang.org/2022/05/10/malicious-crate-rustdecimal.html">rustdecimal</a>
 crate, masquerading as the legitimate <code>rust_decimal</code> crate.
-It contained a payload targeting Gitlab CI platforms.</li>
+It contained a payload targeting Gitlab CI.</li>
 </ul>
 </li>
 <li>
-<p>New versions of legitimate crates, either by stealing publishing credentials or
+<p>New versions of legitimate crates, either by stealing credentials or
 gaining publication access.</p>
 </li>
 </ul>
 <p>For now the Rust ecosystem has been relatively preserved for these attacks, but it's likely
 linked to the lower visibility and popularity (compared to <code>npm.org</code> for example),
 and not to intrinsic differences in the tooling or usage, so you need to be
-cautious anyway.</p>
-<p>Also be conscious that in order to be affected, you don't need to push the new crate to your repository or even run your
+cautious anyway.
+Also be conscious that in order to be affected, you don't need to push the new crate to your repository or even run your
 program locally.
-Only adding the crate to your local project can compromise the developer's system as
-the <code>build.rs</code> file and <a href="https://github.com/lucky/bad_actor_poc">proc-macros</a> allow arbitrary code execution.</p>
+Only adding the crate to your local project can compromise the developer's machine.</p>
 <h2 id="choose-dependencies"><a class="header" href="#choose-dependencies">Choose dependencies</a></h2>
-<h3 id="minimize-dependencies"><a class="header" href="#minimize-dependencies">Minimize dependencies</a></h3>
+<h3 id="DEPS-FEATURES"><a class="header" href="#DEPS-FEATURES">Minimize dependencies (DEPS-FEATURES)</a></h3>
 <p>The safest dependency is the one you don't include.
 Be careful though, the number of dependencies is not always a good measurement of the attack surface
 (several crates maintained by the same team don't really multiply the risk).
 To get an overview of people and organizations with publish access to your dependencies,
 you can use the <a href="https://github.com/rust-secure-code/cargo-supply-chain">cargo supply-chain</a> tool.</p>
-<p>In order to minimize the number of dependencies, you can:</p>
+<p>In order to minimize the number of dependencies, and your attack surface, you can:</p>
 <ul>
 <li>Explore your dependency tree with <code>cargo tree</code>/<code>cargo supply-chain</code> to see if you spot something to remove</li>
 <li>Minimizing the dependency features.
 Crates tend to include a lot of features by default
 for convenience, but you can usually remove a part of the dependencies by only selecting the ones you actually need.</li>
 </ul>
-<h3 id="assess-a-dependency"><a class="header" href="#assess-a-dependency">Assess a dependency</a></h3>
+<h3 id="DEPS-ASSESS"><a class="header" href="#DEPS-ASSESS">Assess a dependency (DEPS-ASSESS)</a></h3>
 <p>When considering adding a dependency, there are a few things
 you can do to lower the different risks.
 Auditing the code is always an option, but is not scalable, especially including all future version upgrades.
@@ -355,18 +355,23 @@ TODO include security-related parts of the check-list here?
 <h2 id="maintain-dependencies-over-time"><a class="header" href="#maintain-dependencies-over-time">Maintain dependencies over time</a></h2>
 <p>Once you have a dependency, you need to keep track of it
 over time.</p>
-<h3 id="vulnerability-and-maintenance-check"><a class="header" href="#vulnerability-and-maintenance-check">Vulnerability and maintenance check</a></h3>
+<h3 id="DEPS-VULNS"><a class="header" href="#DEPS-VULNS">Vulnerability and maintenance check (DEPS-VULNS)</a></h3>
 <p>You should also monitor for vulnerabilities and unmaintained crates using <code>cargo audit</code> or <code>cargo deny</code> regularly
 (e.g. with a daily CI job).
-Github's tooling](https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/)
+<a href="https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/">GitHub's tooling</a>
 can also help
 track security vulnerabilities in your project.</p>
-<h3 id="regular-updates"><a class="header" href="#regular-updates">Regular updates</a></h3>
+<h3 id="DEPS-UPDATES"><a class="header" href="#DEPS-UPDATES">Regular updates (DEPS-UPDATES)</a></h3>
 <p>You should also try to stay up to date; this helps get bug fixes and improvements,
 and also avoids using unmaintained versions,
 ensuring to get easy access to security fixes in case of security vulnerability.
 Use <a href="https://github.com/kbknapp/cargo-outdated"><code>cargo outdated</code></a> to show possible updates.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="maintaining-a-crate"><a class="header" href="#maintaining-a-crate">Maintaining a crate</a></h1>
+<p>This page contains the items related to crate maintenance, especially when
+you intend to make your crate public.</p>
+<p>An obvious risk is a takeover of the crate, for example, on the crates.io repository,
+in order to publish malicious versions of your crate.</p>
+<p>It is also important to help your consumers (library or binary program users)</p>
 <p>best practices to secure publication 
 and help crates consumers.</p>
 <h2 id="cargolock"><a class="header" href="#cargolock"><code>Cargo.lock</code></a></h2>
@@ -378,12 +383,26 @@ This will help keep track of the exact versions used and ensure consistent build
 <li>Allow users of the crate to control transitive dependencies depending on their needs, using features.</li>
 </ul>
 <h2 id="maintaining-a-crate-building-cc-code"><a class="header" href="#maintaining-a-crate-building-cc-code">Maintaining a crate building C/C++ code</a></h2>
+<p>Some crates which provide bindings for a C or C++ library provide the option
+to </p>
 <h3 id="use-a-dedicated-crate-if-possible"><a class="header" href="#use-a-dedicated-crate-if-possible">Use a dedicated crate if possible</a></h3>
+<p>Instead of building the static library directly in the <code>-sys</code> crate, a good practice is 
+to use a dedicated crate for this purpose (like <code>openssl-sys</code> and <code>openssl-src</code>).</p>
+<p>This allows making the presence of the embedded library visible in the cargo tooling
+(cargo tree, etc.), and more specifically to get security advisories for the embedded
+component through the usual channels (<code>cargo audit/deny</code>).</p>
 <h3 id="provide-flags-allowing-to-select-the-behavior"><a class="header" href="#provide-flags-allowing-to-select-the-behavior">Provide flags allowing to select the behavior</a></h3>
+<p>Users need to be able to be sure of the outcome of the build, whether they want to always
+embed the library statically, or enforce dynamic linking and make the build fail
+if it is missing.
+A clear way to express this is to do dynamic linking by default
+and provide a flag (<code>vendored</code> or similar) to choose to embed the library.</p>
+<p>If the default behavior is to embed the library from the crate if missing on the system for convenience,
+then it should be documented clearly.</p>
 <h2 id="publication"><a class="header" href="#publication">Publication</a></h2>
 <h3 id="cratesio"><a class="header" href="#cratesio">crates.io</a></h3>
-<p>When using crates.io to distribute your program, you need to be careful about a few things.</p>
-<p>As crates.io uses GitHub as authentication layer, you should first properly secure your account using general best practices.
+<p>When using crates.io, you need to be careful about a few things.
+As crates.io uses GitHub as authentication layer, you should first properly secure your account using general best practices.
 In particular,
 make sure to have <a href="https://github.com/settings/security">two-factor authentication layer configured</a>
 (and avoid the SMS/Text message method).</p>
@@ -401,22 +420,18 @@ as an <a href="https://docs.github.com/en/actions/security-guides/encrypted-secr
 and passed as the
 <a href="https://doc.rust-lang.org/cargo/reference/config.html?highlight=CARGO_REGISTRY_TOKEN#credentials"><code>CARGO_REGISTRY_TOKEN</code></a> environment variable.</p>
 <p><img src="images/token.png" alt="New token form on crates.io" /></p>
-<ul>
-<li>publishing permissions on crates.io</li>
-</ul>
-<h2 id="vulnerabilities"><a class="header" href="#vulnerabilities">Vulnerabilities</a></h2>
-<p>If you find vulnerabilities affecting you crate, or if vulnerabilities are reported to
-your bug tracker, reporting them to RustSec will get your users warned if they use
+<h2 id="MAINTAIN-VULNS"><a class="header" href="#MAINTAIN-VULNS">Reporting vulnerabilities (MAINTAIN-VULNS)</a></h2>
+<p>If you find a vulnerability affecting your crate,
+<a href="https://rustsec.org/contributing.html">reporting it to the RustSec advisory database</a> will get
+your users warned if they use
 any kind of vulnerability detection on their dependencies.</p>
-<p>Reporting to RustSec's advisory-db is enough as the advisories will get imported
-by GitHub into their advisory database (allowing alerts by dependabot for example).</p>
-<ul>
-<li>report vulns to rustsec</li>
-<li>they will automatically get to github</li>
-</ul>
+<p>Reporting to RustSec only is enough as the advisories will get imported
+by GitHub into their advisory database (allowing alerts and pull requests by <em>dependabot</em> for example),
+end assigned a CVE when relevant.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="build-for-production-1"><a class="header" href="#build-for-production-1">Build for production</a></h1>
+<p><a href="https://www.crowdstrike.com/blog/sunspot-malware-technical-analysis/">SUNSPOT attack</a> on SolarWinds build platform, etc.).</p>
 <h2 id="embed-dependency-list-in-binaries"><a class="header" href="#embed-dependency-list-in-binaries">Embed dependency list in binaries</a></h2>
-<p>For traceability, it is useful to be able to get the lift of dependencies from a build binary.
+<p>For traceability, it is useful to be able to get the list of dependencies from a build binary.
 This allows, for example, auditing for known vulnerability directly on the binary files.
 This is not done by default in Rust builds,
 but you can use <a href="https://github.com/rust-secure-code/cargo-auditable"><code>cargo auditable</code></a> to include this information.</p>
@@ -443,7 +458,12 @@ but you can use <a href="https://github.com/rust-secure-code/cargo-auditable"><c
 </code></pre>
 <p><strong>Warning</strong>: Due to the way some <code>-sys</code> crate work, some C/C++ native
 library may be included in the binary but not visible in the embedded data.<sup class="footnote-reference"><a href="#src-crates">1</a></sup></p>
-<h2 id="deterministic-builds"><a class="header" href="#deterministic-builds">Deterministic builds</a></h2>
+<h2 id="build-process"><a class="header" href="#build-process">Build process</a></h2>
+<h3 id="build-toolchain"><a class="header" href="#build-toolchain">Build toolchain</a></h3>
+<p><code>rustup</code> is a very convenient tool for managing Rust toolchains, but <a href="https://rust-lang.github.io/rustup/security.html">does not yet</a> validate
+signatures for the downloaded files. Depending on your requirements, it may be preferable to choose another installation method like
+<a href="https://forge.rust-lang.org/infra/other-installation-methods.html#standalone-installers">standalone installers</a>
+which allow you to validate signatures for downloaded files (or a Rust compiler provided by your Linux distribution).</p>
 <h3 id="locked-dependencies"><a class="header" href="#locked-dependencies">Locked dependencies</a></h3>
 <p>When building for production, you should have a <code>Cargo.lock</code> file in the sources,
 and ensure the build commands include the <code>--locked</code> flag.</p>
@@ -533,6 +553,31 @@ clang LLVM (rustc version 1.68.0 (2c8cc3432 2023-03-06))
 </code></pre>
 <h2 id="audit-sboms"><a class="header" href="#audit-sboms">Audit SBOMs</a></h2>
 <p>It is also possible to look for known vulnerabilities in a SBOM.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="external-links"><a class="header" href="#external-links">External links</a></h1>
+<h2 id="rust-supply-chain-security"><a class="header" href="#rust-supply-chain-security">Rust supply chain security</a></h2>
+<ul>
+<li><a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">Comparing Rust supply chain safety tools</a> (May 2022, by llogiq)</li>
+<li><a href="https://www.bitfalter.com/rust-supply-chain-security">Rust Supply Chain Security</a> (April 2023, by Bitfalter)</li>
+<li><a href="https://internals.rust-lang.org/t/about-supply-chain-attacks/14038">About Supply Chain Attacks</a> (February 2021, topic on IRLO)</li>
+</ul>
+<h2 id="general-rust-security"><a class="header" href="#general-rust-security">General Rust Security</a></h2>
+<ul>
+<li><a href="https://anssi-fr.github.io/rust-guide/">Secure Rust Guidelines</a> (May 2022, by ANSSI)</li>
+<li><a href="https://insights.sei.cmu.edu/blog/rust-software-security-a-current-state-assessment/">Rust Software Security: A Current State Assessment</a> (December 2022, Software Engineering Institute, CMU)</li>
+<li><a href="https://highassurance.rs/">High Assurance Rust: Developing Secure and Robust Software</a></li>
+<li><a href="https://rust-fuzz.github.io/book/introduction.html">Rust Fuzz Book</a></li>
+<li><a href="https://github.com/rust-secure-code/projects">List of security-related projects</a></li>
+</ul>
+<h2 id="report-security-issues"><a class="header" href="#report-security-issues">Report security issues</a></h2>
+<ul>
+<li><a href="https://www.rust-lang.org/policies/security">Rust's official Security Policy</a></li>
+<li><a href="https://rustsec.org/">RustSec, a vulnerability database for the Rust ecosystem</a></li>
+</ul>
+<h2 id="propositions"><a class="header" href="#propositions">Propositions</a></h2>
+<ul>
+<li>Using Sigstore for signing and verifying crates: <a href="https://github.com/trustification/rust-rfcs/blob/sigstore-rfc/text/0000-sigstore-integration.md">pre-RFC</a>, <a href="https://internals.rust-lang.org/t/pre-rfc-using-sigstore-for-signing-and-verifying-crates/18115/31">topic on IRLO</a> (January 2023)</li>
+<li><a href="https://internals.rust-lang.org/t/statically-linked-c-c-libraries/17175">Statically-linked C/C++ libraries</a> (August 2022, topic on IRLO)</li>
+</ul>
 
                     </main>
 

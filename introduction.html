@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html" class="active">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html" class="active">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -174,11 +174,22 @@
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <h2 id="what-is-software-supply-chain-security"><a class="header" href="#what-is-software-supply-chain-security">What is <em>Software Supply Chain Security</em>?</a></h2>
+<p>The <em>Software Supply Chain</em> has been named as an analogy with the &quot;physical&quot;
+<a href="https://en.wikipedia.org/wiki/Supply_chain">supply chain</a>,
+that goes from raw materials to end consumers, through a system made of multiple links
+(factories, delivery, etc.).</p>
 <blockquote>
 <p>A software supply chain is composed of the components, libraries, tools,
 and processes used to develop, build, and publish a software artifact.<sup class="footnote-reference"><a href="#wiki">1</a></sup></p>
 </blockquote>
-<p>Although not a recent notion, it has taken a growing focus due to the visibility of security vulnerabilities affecting the software supply chain (log4j, SolarWinds, etc.).</p>
+<p>In the Rust context, it means more specifically the chain from the sources,
+the dependencies (whether on crates.io or not),
+build toolchain (<code>rustc</code>, <code>cargo</code>), CI/CD platforms, binary distribution, etc.</p>
+<p>The software supply chain has been an increasingly frequent target
+in recent years, as it allows attacking well-secured systems
+by focusing on weaker links in their supply chain,
+or attacking multiple targets with a single entry point.
+In response, </p>
 <p>Diagram of the software supply chain risks (by the SLSA project)<sup class="footnote-reference"><a href="#threats">2</a></sup>:</p>
 <p><img src="images/supply-chain-threats.svg" alt="The supply chains threats, SLSA project" /></p>
 <h2 id="about-this-guide"><a class="header" href="#about-this-guide">About this guide</a></h2>
@@ -194,13 +205,6 @@ It focuses on currently available tooling for the Rust ecosystem and provides ac
 whenever possible.</p>
 <p>The <a href="./checklist.html">checklist</a> gives an overview of the recommendations from the whole guide
 and helps to prioritize the different topics.</p>
-<h2 id="other-resources"><a class="header" href="#other-resources">Other resources</a></h2>
-<ul>
-<li><a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">Comparing Rust supply chain safety tools</a> (May 2022, by llogiq)</li>
-<li><a href="https://www.bitfalter.com/rust-supply-chain-security">Rust Supply Chain Security</a> (April 2023, by Bitfalter)</li>
-<li><a href="https://anssi-fr.github.io/rust-guide/03_libraries.html">Secure Rust Guidelines</a> (May 2022, by ANSSI)</li>
-<li><a href="https://internals.rust-lang.org/t/about-supply-chain-attacks/14038">About Supply Chain Attacks</a> (February 2021, topic on IRLO)</li>
-</ul>
 <div class="footnote-definition" id="wiki"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/w/index.php?title=Software_supply_chain&amp;oldid=1148357822#cite_note-1"><em>Software Supply Chain</em></a> on Wikipedia (en)
 (under <em>Creative Commons Attribution-ShareAlike License 3.0</em>)</p>

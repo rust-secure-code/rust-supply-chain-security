@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html" class="active"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html" class="active"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -173,18 +173,18 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="manage-dependencies"><a class="header" href="#manage-dependencies">Manage dependencies</a></h1>
-<p><code>cargo</code> makes it really easy to use dependencies, so the Rust ecosystem tends
+<p><code>cargo</code> makes it really easy to use dependencies, so the programs in the Rust ecosystem tend
 to use a lot of them.
-This page explains how to mitigate the risks that come with it.</p>
-<h2 id="risks"><a class="header" href="#risks">Risks</a></h2>
-<p>What can happen with a dependency (either direct or somewhere in the dependency tree)? </p>
-<h3 id="vulnerable-crates"><a class="header" href="#vulnerable-crates">Vulnerable crates</a></h3>
-<p>The most common risk is the presence of exploitable vulnerabilities in one of the dependencies.</p>
-<h3 id="malicious-crates"><a class="header" href="#malicious-crates">Malicious crates</a></h3>
+Despite the obvious advantages for the developers, this also comes with
+specific risks.
+Let's start by describing them, either direct or somewhere in the dependency tree.</p>
+<p>The most common risk is the presence of vulnerabilities in one of the dependencies,
+like <a href="https://en.wikipedia.org/wiki/Log4Shell">Log4Shell</a> in the Java <code>log4j</code> logging library,
+containing an exploitable remote code execution.</p>
 <p>The other main risk is an intentional attack introducing malicious behavior (advertising, attacking developer systems,
 compromising build systems, introducing backdoor in final products, etc.) in the 
-dependency tree.</p>
-<p>There are several types of malicious crates:</p>
+dependency tree.
+There are several possible kinds of malicious crates:</p>
 <ul>
 <li>
 <p>New crates which look like legitimate ones.
@@ -192,37 +192,36 @@ Frequently using a name close to a widely used one (called typosquatting).</p>
 <ul>
 <li>Such an incident already happened with the <a href="https://blog.rust-lang.org/2022/05/10/malicious-crate-rustdecimal.html">rustdecimal</a>
 crate, masquerading as the legitimate <code>rust_decimal</code> crate.
-It contained a payload targeting Gitlab CI platforms.</li>
+It contained a payload targeting Gitlab CI.</li>
 </ul>
 </li>
 <li>
-<p>New versions of legitimate crates, either by stealing publishing credentials or
+<p>New versions of legitimate crates, either by stealing credentials or
 gaining publication access.</p>
 </li>
 </ul>
 <p>For now the Rust ecosystem has been relatively preserved for these attacks, but it's likely
 linked to the lower visibility and popularity (compared to <code>npm.org</code> for example),
 and not to intrinsic differences in the tooling or usage, so you need to be
-cautious anyway.</p>
-<p>Also be conscious that in order to be affected, you don't need to push the new crate to your repository or even run your
+cautious anyway.
+Also be conscious that in order to be affected, you don't need to push the new crate to your repository or even run your
 program locally.
-Only adding the crate to your local project can compromise the developer's system as
-the <code>build.rs</code> file and <a href="https://github.com/lucky/bad_actor_poc">proc-macros</a> allow arbitrary code execution.</p>
+Only adding the crate to your local project can compromise the developer's machine.</p>
 <h2 id="choose-dependencies"><a class="header" href="#choose-dependencies">Choose dependencies</a></h2>
-<h3 id="minimize-dependencies"><a class="header" href="#minimize-dependencies">Minimize dependencies</a></h3>
+<h3 id="DEPS-FEATURES"><a class="header" href="#DEPS-FEATURES">Minimize dependencies (DEPS-FEATURES)</a></h3>
 <p>The safest dependency is the one you don't include.
 Be careful though, the number of dependencies is not always a good measurement of the attack surface
 (several crates maintained by the same team don't really multiply the risk).
 To get an overview of people and organizations with publish access to your dependencies,
 you can use the <a href="https://github.com/rust-secure-code/cargo-supply-chain">cargo supply-chain</a> tool.</p>
-<p>In order to minimize the number of dependencies, you can:</p>
+<p>In order to minimize the number of dependencies, and your attack surface, you can:</p>
 <ul>
 <li>Explore your dependency tree with <code>cargo tree</code>/<code>cargo supply-chain</code> to see if you spot something to remove</li>
 <li>Minimizing the dependency features.
 Crates tend to include a lot of features by default
 for convenience, but you can usually remove a part of the dependencies by only selecting the ones you actually need.</li>
 </ul>
-<h3 id="assess-a-dependency"><a class="header" href="#assess-a-dependency">Assess a dependency</a></h3>
+<h3 id="DEPS-ASSESS"><a class="header" href="#DEPS-ASSESS">Assess a dependency (DEPS-ASSESS)</a></h3>
 <p>When considering adding a dependency, there are a few things
 you can do to lower the different risks.
 Auditing the code is always an option, but is not scalable, especially including all future version upgrades.
@@ -267,13 +266,13 @@ TODO include security-related parts of the check-list here?
 <h2 id="maintain-dependencies-over-time"><a class="header" href="#maintain-dependencies-over-time">Maintain dependencies over time</a></h2>
 <p>Once you have a dependency, you need to keep track of it
 over time.</p>
-<h3 id="vulnerability-and-maintenance-check"><a class="header" href="#vulnerability-and-maintenance-check">Vulnerability and maintenance check</a></h3>
+<h3 id="DEPS-VULNS"><a class="header" href="#DEPS-VULNS">Vulnerability and maintenance check (DEPS-VULNS)</a></h3>
 <p>You should also monitor for vulnerabilities and unmaintained crates using <code>cargo audit</code> or <code>cargo deny</code> regularly
 (e.g. with a daily CI job).
-Github's tooling](https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/)
+<a href="https://github.blog/2022-06-06-github-brings-supply-chain-security-features-to-the-rust-community/">GitHub's tooling</a>
 can also help
 track security vulnerabilities in your project.</p>
-<h3 id="regular-updates"><a class="header" href="#regular-updates">Regular updates</a></h3>
+<h3 id="DEPS-UPDATES"><a class="header" href="#DEPS-UPDATES">Regular updates (DEPS-UPDATES)</a></h3>
 <p>You should also try to stay up to date; this helps get bug fixes and improvements,
 and also avoids using unmaintained versions,
 ensuring to get easy access to security fixes in case of security vulnerability.

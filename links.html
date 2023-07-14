@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - Rust Supply Chain Security Guide</title>
+        <title>External links - Rust Supply Chain Security Guide</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html" class="active">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="links.html" class="active">External links</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -143,7 +143,7 @@
                         <a href="https://github.com/amousset/rust-supply-chain-security" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/amousset/rust-supply-chain-security/edit/main/src/introduction.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/amousset/rust-supply-chain-security/edit/main/src/links.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -172,57 +172,40 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<h2 id="what-is-software-supply-chain-security"><a class="header" href="#what-is-software-supply-chain-security">What is <em>Software Supply Chain Security</em>?</a></h2>
-<p>The <em>Software Supply Chain</em> has been named as an analogy with the &quot;physical&quot;
-<a href="https://en.wikipedia.org/wiki/Supply_chain">supply chain</a>,
-that goes from raw materials to end consumers, through a system made of multiple links
-(factories, delivery, etc.).</p>
-<blockquote>
-<p>A software supply chain is composed of the components, libraries, tools,
-and processes used to develop, build, and publish a software artifact.<sup class="footnote-reference"><a href="#wiki">1</a></sup></p>
-</blockquote>
-<p>In the Rust context, it means more specifically the chain from the sources,
-the dependencies (whether on crates.io or not),
-build toolchain (<code>rustc</code>, <code>cargo</code>), CI/CD platforms, binary distribution, etc.</p>
-<p>The software supply chain has been an increasingly frequent target
-in recent years, as it allows attacking well-secured systems
-by focusing on weaker links in their supply chain,
-or attacking multiple targets with a single entry point.
-In response, </p>
-<p>Diagram of the software supply chain risks (by the SLSA project)<sup class="footnote-reference"><a href="#threats">2</a></sup>:</p>
-<p><img src="images/supply-chain-threats.svg" alt="The supply chains threats, SLSA project" /></p>
-<h2 id="about-this-guide"><a class="header" href="#about-this-guide">About this guide</a></h2>
-<p>This guide is not a general introduction to the software supply chain security topic.
-To learn more about it, you can
-have a look at introductions by vendors like <a href="https://www.redhat.com/en/topics/security/what-is-software-supply-chain-security">Red Hat</a>
-or <a href="https://snyk.io/series/software-supply-chain-security/">snyk</a>,
-or the <a href="https://openssf.org/">OpenSSF</a> and <a href="https://slsa.dev">SLSA</a>
-projects.</p>
-<p>It is aimed at Rust developers, whether working on libraries in the ecosystem or on programs
-for end-users (and some parts of the guide are only applicable to one of these situations).
-It focuses on currently available tooling for the Rust ecosystem and provides actionable items
-whenever possible.</p>
-<p>The <a href="./checklist.html">checklist</a> gives an overview of the recommendations from the whole guide
-and helps to prioritize the different topics.</p>
-<div class="footnote-definition" id="wiki"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://en.wikipedia.org/w/index.php?title=Software_supply_chain&amp;oldid=1148357822#cite_note-1"><em>Software Supply Chain</em></a> on Wikipedia (en)
-(under <em>Creative Commons Attribution-ShareAlike License 3.0</em>)</p>
-</div>
-<div class="footnote-definition" id="threats"><sup class="footnote-definition-label">2</sup>
-<p><em>Supply chain Levels for Software Artifacts</em>,
-<a href="https://slsa.dev/spec/v1.0/threats">Supply chain threats</a>
-(under <em>Community Specification License 1.0</em>)</p>
-</div>
+                        <h1 id="external-links"><a class="header" href="#external-links">External links</a></h1>
+<h2 id="rust-supply-chain-security"><a class="header" href="#rust-supply-chain-security">Rust supply chain security</a></h2>
+<ul>
+<li><a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">Comparing Rust supply chain safety tools</a> (May 2022, by llogiq)</li>
+<li><a href="https://www.bitfalter.com/rust-supply-chain-security">Rust Supply Chain Security</a> (April 2023, by Bitfalter)</li>
+<li><a href="https://internals.rust-lang.org/t/about-supply-chain-attacks/14038">About Supply Chain Attacks</a> (February 2021, topic on IRLO)</li>
+</ul>
+<h2 id="general-rust-security"><a class="header" href="#general-rust-security">General Rust Security</a></h2>
+<ul>
+<li><a href="https://anssi-fr.github.io/rust-guide/">Secure Rust Guidelines</a> (May 2022, by ANSSI)</li>
+<li><a href="https://insights.sei.cmu.edu/blog/rust-software-security-a-current-state-assessment/">Rust Software Security: A Current State Assessment</a> (December 2022, Software Engineering Institute, CMU)</li>
+<li><a href="https://highassurance.rs/">High Assurance Rust: Developing Secure and Robust Software</a></li>
+<li><a href="https://rust-fuzz.github.io/book/introduction.html">Rust Fuzz Book</a></li>
+<li><a href="https://github.com/rust-secure-code/projects">List of security-related projects</a></li>
+</ul>
+<h2 id="report-security-issues"><a class="header" href="#report-security-issues">Report security issues</a></h2>
+<ul>
+<li><a href="https://www.rust-lang.org/policies/security">Rust's official Security Policy</a></li>
+<li><a href="https://rustsec.org/">RustSec, a vulnerability database for the Rust ecosystem</a></li>
+</ul>
+<h2 id="propositions"><a class="header" href="#propositions">Propositions</a></h2>
+<ul>
+<li>Using Sigstore for signing and verifying crates: <a href="https://github.com/trustification/rust-rfcs/blob/sigstore-rfc/text/0000-sigstore-integration.md">pre-RFC</a>, <a href="https://internals.rust-lang.org/t/pre-rfc-using-sigstore-for-signing-and-verifying-crates/18115/31">topic on IRLO</a> (January 2023)</li>
+<li><a href="https://internals.rust-lang.org/t/statically-linked-c-c-libraries/17175">Statically-linked C/C++ libraries</a> (August 2022, topic on IRLO)</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-
-                            <a rel="next" href="checklist.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
+                            <a rel="prev" href="run.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
                             </a>
+
 
                         <div style="clear: both"></div>
                     </nav>
@@ -230,10 +213,10 @@ and helps to prioritize the different topics.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-
-                    <a rel="next" href="checklist.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
+                    <a rel="prev" href="run.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
                     </a>
+
             </nav>
 
         </div>
