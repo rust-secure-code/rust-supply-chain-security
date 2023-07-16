@@ -222,8 +222,12 @@ Until then, you can look for the version in the strings included in the binary:<
 <pre><code class="language-shell">$ strings ~/.cargo/bin/rg | grep 'rustc version'
 clang LLVM (rustc version 1.68.0 (2c8cc3432 2023-03-06))
 </code></pre>
+<p>You should keep informed about vulnerabilities affect the Rust toolchain
+(compiler, cargo, etc.) as the vulnerability detection
+tooling (<code>cargo audit/deny</code>) is not able to warn you about these. You can subscribe to the
+<a href="https://www.rust-lang.org/policies/security#security-receiving">security announcement mailing-list</a> linked in the security policy.</p>
 <h2 id="audit-sboms"><a class="header" href="#audit-sboms">Audit SBOMs</a></h2>
-<p>It is also possible to look for known vulnerabilities in a SBOM.</p>
+<p>It is also possible to look for known vulnerabilities in a SBOM if they were produced at build time.</p>
 
                     </main>
 

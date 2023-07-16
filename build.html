@@ -197,12 +197,7 @@ It also ensures the dependencies used for production build match what the source
 If there is an inconsistency between the <code>Cargo.lock</code>
 and <code>Cargo.toml</code> and the <code>--locked</code> flag is passed the build will fail
 (while the lock file would be automatically updated without it).</p>
-<h3 id="sandboxed-builds"><a class="header" href="#sandboxed-builds">Sandboxed builds</a></h3>
-<p>As building Rust code runs arbitrary code locally (procedural macros and <code>build.rs</code>),
-the build environment should be protected against attacks that could lead to persisting malicious software in
-the build environment.
-To do so, the build environment should be ephemeral and isolated (in a dedicated container, or -even better- a VM).</p>
-<h3 id="reproducible-builds"><a class="header" href="#reproducible-builds">Reproducible builds</a></h3>
+<h3 id="BUILD-REPRODUCIBLE"><a class="header" href="#BUILD-REPRODUCIBLE">Reproducible builds (BUILD-REPRODUCIBLE)</a></h3>
 <p><a href="https://reproducible-builds.org/">Reproducible builds</a> designates an effort to make
 software re-buildable from sources with the exact same output, allowing anyone to check 
 that the provided binaries are actually the product of their sources.
@@ -225,37 +220,12 @@ rustflags = [&quot;--remap-path-prefix /path/to/build=/static-placeholder&quot;]
 of them match, the last matching one is applied).
 This process will become more straightforward once the <a href="https://rust-lang.github.io/rfcs/3127-trim-paths.html">RFC 3127</a>
 gets <a href="https://github.com/rust-lang/cargo/issues/12137">implemented</a> in cargo.</p>
-<h2 id="software-bill-of-materials-aka-sbom"><a class="header" href="#software-bill-of-materials-aka-sbom">Software Bill Of Materials (a.k.a. SBOM)</a></h2>
-<p><a href="https://www.aquasec.com/cloud-native-academy/supply-chain-security/sbom/">Software Bills Of Materials</a> for Rust programs usually need
-to be created from the sources (as the binaries don't contain enough information).</p>
-<p><strong>Warning</strong>: Due to the way some <code>-sys</code> crate work, some C/C++ native
-library may be included in the binary but not visible in the
-SBOM.<sup class="footnote-reference"><a href="#src-crates">1</a></sup></p>
-<p>There are available tooling for the two most common SBOM formats in the open-source ecosystems,
-<a href="https://spdx.dev/">SPDX</a> and <a href="https://cyclonedx.org/">CycloneDX</a>.
-Choosing a SBOM format is up to you (they should be somehow interoperable).</p>
-<h3 id="cyclonedx-with-cargo-cyclonedx"><a class="header" href="#cyclonedx-with-cargo-cyclonedx">CycloneDX with <code>cargo-cyclonedx</code></a></h3>
-<p>There is an official CycloneDX cargo subcommand to generate a SBOM
-from a Rust project source, <a href="https://crates.io/crates/cargo-cyclonedx"><code>cargo-cyclonedx</code></a></p>
-<pre><code class="language-bash"># Produced a `bom.cdx.json` files
-cargo cyclonedx --all --format json --output-cdx
-</code></pre>
-<p>It understands cargo workspaces and produces a JSON (or XML) file in the current directory.
-To aggregate several files, validate or sign them, you can use the <a href="https://github.com/CycloneDX/cyclonedx-cli"><code>cyclonedx-cli</code></a>.</p>
-<pre><code class="language-bash">cyclonedx merge --input-files *.json --output-file myprogram.cdx.json
-</code></pre>
-<h3 id="spdx-and-cyclonedx-with-cargo-sbom"><a class="header" href="#spdx-and-cyclonedx-with-cargo-sbom">SPDX and CycloneDX with <code>cargo-sbom</code></a></h3>
-<p>There is a cargo subcommand available to generate an SPDX or CycloneDX SBOM from a Rust projet source,
-<a href="https://github.com/psastras/sbom-rs"><code>cargo-sbom</code></a>.</p>
-<pre><code class="language-bash"># SPDX output (default)
-cargo sbom &gt; sbom.spdx.json
-# CycloneDX output
-cargo sbom --output-format cyclone_dx_json_1_4 &gt; sbom.cdx.json
-</code></pre>
-<h2 id="signature"><a class="header" href="#signature">Signature</a></h2>
-<p>There is no specific tooling for signing Rust binaires at the moment, but common approaches can apply
-You can, for example, use a GPG-based signature.</p>
-<h2 id="embed-dependency-list-in-binaries"><a class="header" href="#embed-dependency-list-in-binaries">Embed dependency list in binaries</a></h2>
+<h3 id="BUILD-ISOLATED"><a class="header" href="#BUILD-ISOLATED">Sandboxed builds (BUILD-ISOLATED)</a></h3>
+<p>As building Rust code runs arbitrary code locally (procedural macros and <code>build.rs</code>),
+the build environment should be protected against attacks that could lead to persisting malicious software in
+the build environment.
+To do so, the build environment should be ephemeral and isolated (in a dedicated container, or -even better- a VM).</p>
+<h2 id="BUILD-AUDITABLE"><a class="header" href="#BUILD-AUDITABLE">Embed dependency list in binaries (BUILD-AUDITABLE)</a></h2>
 <p>For traceability, it is useful to be able to get the list of dependencies from a build binary.
 This allows, for example, auditing for known vulnerability directly on the binary files.
 This is not done by default in Rust builds,
@@ -281,11 +251,40 @@ but you can use <a href="https://github.com/rust-secure-code/cargo-auditable"><c
     # [...]
 }
 </code></pre>
-<p><strong>Warning</strong>: Due to the way some <code>-sys</code> crate work, some C/C++ native
-library may be included in the binary but not visible in the embedded data.<sup class="footnote-reference"><a href="#src-crates">1</a></sup></p>
-<div class="footnote-definition" id="src-crates"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://internals.rust-lang.org/t/statically-linked-c-c-libraries/17175"><em>Statically-linked C/C++ libraries</em> on internals.rust-lang.org</a></p>
-</div>
+<p><strong>Warning</strong>: Due to <a href="https://internals.rust-lang.org/t/statically-linked-c-c-libraries/17175">the way some <code>-sys</code> crate work</a>, some C/C++ native
+library may be included in the binary but not visible in the embedded data.</p>
+<h2 id="BUILD-SIGN"><a class="header" href="#BUILD-SIGN">Signature (BUILD-SIGN)</a></h2>
+<p>There is no specific tooling for signing Rust binaires at the moment, but common approaches can apply
+You can, for example, use a GPG-based signature.</p>
+<p>There is also an open <a href="https://github.com/trustification/rust-rfcs/blob/sigstore-rfc/text/0000-sigstore-integration.md">pre-RFC</a>
+proposing to use <a href="https://www.sigstore.dev/">sigstore</a> for signing and verifying crates (<a href="https://internals.rust-lang.org/t/pre-rfc-using-sigstore-for-signing-and-verifying-crates/18115/31">topic on IRLO</a>).</p>
+<h2 id="BUILD-SBOM"><a class="header" href="#BUILD-SBOM">Software Bill Of Materials (a.k.a. SBOM) (BUILD-SBOM)</a></h2>
+<p><a href="https://www.aquasec.com/cloud-native-academy/supply-chain-security/sbom/">Software Bills Of Materials</a> for Rust programs usually need
+to be created from the sources (as the binaries don't contain enough information).</p>
+<p><strong>Warning</strong>: Due to <a href="https://internals.rust-lang.org/t/statically-linked-c-c-libraries/17175">the way some <code>-sys</code> crate work</a>, some C/C++ native
+library may be included in the binary but not visible in the
+SBOM.</p>
+<p>There are available tooling for the two most common SBOM formats in the open-source ecosystems,
+<a href="https://spdx.dev/">SPDX</a> and <a href="https://cyclonedx.org/">CycloneDX</a>.
+Choosing a SBOM format is up to you (they should be somehow interoperable).</p>
+<h3 id="cyclonedx-with-cargo-cyclonedx"><a class="header" href="#cyclonedx-with-cargo-cyclonedx">CycloneDX with <code>cargo-cyclonedx</code></a></h3>
+<p>There is an official CycloneDX cargo subcommand to generate a SBOM
+from a Rust project source, <a href="https://crates.io/crates/cargo-cyclonedx"><code>cargo-cyclonedx</code></a></p>
+<pre><code class="language-bash"># Produced a `bom.cdx.json` files
+cargo cyclonedx --all --format json --output-cdx
+</code></pre>
+<p>It understands cargo workspaces and produces a JSON (or XML) file in the current directory.
+To aggregate several files, validate or sign them, you can use the <a href="https://github.com/CycloneDX/cyclonedx-cli"><code>cyclonedx-cli</code></a>.</p>
+<pre><code class="language-bash">cyclonedx merge --input-files *.json --output-file myprogram.cdx.json
+</code></pre>
+<h3 id="spdx-and-cyclonedx-with-cargo-sbom"><a class="header" href="#spdx-and-cyclonedx-with-cargo-sbom">SPDX and CycloneDX with <code>cargo-sbom</code></a></h3>
+<p>There is a cargo subcommand available to generate an SPDX or CycloneDX SBOM from a Rust project source,
+<a href="https://github.com/psastras/sbom-rs"><code>cargo-sbom</code></a>.</p>
+<pre><code class="language-bash"># SPDX output (default)
+cargo sbom &gt; sbom.spdx.json
+# CycloneDX output
+cargo sbom --output-format cyclone_dx_json_1_4 &gt; sbom.cdx.json
+</code></pre>
 
                     </main>
 

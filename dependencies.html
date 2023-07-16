@@ -182,7 +182,7 @@ Let's start by describing them, either direct or somewhere in the dependency tre
 like <a href="https://en.wikipedia.org/wiki/Log4Shell">Log4Shell</a> in the Java <code>log4j</code> logging library,
 containing an exploitable remote code execution.</p>
 <p>The other main risk is an intentional attack introducing malicious behavior (advertising, attacking developer systems,
-compromising build systems, introducing backdoor in final products, etc.) in the 
+compromising<a href="dependencies.html">dependencies.md</a> build systems, introducing backdoor in final products, etc.) in the 
 dependency tree.
 There are several possible kinds of malicious crates:</p>
 <ul>
@@ -202,26 +202,43 @@ gaining publication access.</p>
 </ul>
 <p>For now the Rust ecosystem has been relatively preserved for these attacks, but it's likely
 linked to the lower visibility and popularity (compared to <code>npm.org</code> for example),
-and not to intrinsic differences in the tooling or usage, so you need to be
-cautious anyway.
-Also be conscious that in order to be affected, you don't need to push the new crate to your repository or even run your
-program locally.
-Only adding the crate to your local project can compromise the developer's machine.</p>
+and not to intrinsic differences in the tooling or usage.</p>
 <h2 id="choose-dependencies"><a class="header" href="#choose-dependencies">Choose dependencies</a></h2>
 <h3 id="DEPS-FEATURES"><a class="header" href="#DEPS-FEATURES">Minimize dependencies (DEPS-FEATURES)</a></h3>
 <p>The safest dependency is the one you don't include.
 Be careful though, the number of dependencies is not always a good measurement of the attack surface
 (several crates maintained by the same team don't really multiply the risk).
 To get an overview of people and organizations with publish access to your dependencies,
-you can use the <a href="https://github.com/rust-secure-code/cargo-supply-chain">cargo supply-chain</a> tool.</p>
+you can use the <a href="https://github.com/rust-secure-code/cargo-supply-chain">cargo supply-chain</a> tool:</p>
+<pre><code class="language-shell">The following individuals can publish updates for your dependencies:
+
+ 1. alexcrichton via crates: bitflags, [...], web-sys
+[...]
+ 139. zrzka via crates: anes
+
+Note: there may be outstanding publisher invitations. crates.io provides no way to list them.
+See https://github.com/rust-lang/crates.io/issues/2868 for more info.
+
+All members of the following teams can publish updates for your dependencies:
+
+ 1. &quot;github:rust-bus:maintainers&quot; (https://github.com/rust-bus) via crates: [...]
+[...]
+ 35. &quot;github:tower-rs:publish&quot; (https://github.com/tower-rs) via crates: tower-service
+
+Github teams are black boxes. It's impossible to get the member list without explicit permission.
+</code></pre>
 <p>In order to minimize the number of dependencies, and your attack surface, you can:</p>
 <ul>
 <li>Explore your dependency tree with <code>cargo tree</code>/<code>cargo supply-chain</code> to see if you spot something to remove</li>
 <li>Minimizing the dependency features.
-Crates tend to include a lot of features by default
-for convenience, but you can usually remove a part of the dependencies by only selecting the ones you actually need.</li>
+Crates tend to include a lot of features by default for convenience,</li>
+<li>but you can usually remove a part of the dependencies by disabling default features and only selecting the ones you actually need.</li>
 </ul>
+<pre><code class="language-toml">mylibrary = { version = &quot;1&quot;, default-features = false, features = [ &quot;required-feature&quot; ] }
+</code></pre>
 <h3 id="DEPS-ASSESS"><a class="header" href="#DEPS-ASSESS">Assess a dependency (DEPS-ASSESS)</a></h3>
+<p>There is a <a href="https://gist.github.com/repi/d98bf9c202ec567fd67ef9e31152f43f">very good checklist</a>
+covering many aspects of crate evaluation published (and used internally) by <a href="https://www.embark-studios.com/">Embark</a>.</p>
 <p>When considering adding a dependency, there are a few things
 you can do to lower the different risks.
 Auditing the code is always an option, but is not scalable, especially including all future version upgrades.
@@ -238,33 +255,31 @@ used by <code>cargo vet</code> for reviews, which is more convenient for compari
 as even only opening it can run arbitrary code in procedural macros.
 Use a simple text editor (without LSP-like features) or make use of
 features like the <a href="https://code.visualstudio.com/docs/editor/workspace-trust">restricted mode</a> in VSCode.</p>
-<h4 id="cargo-vet"><a class="header" href="#cargo-vet"><code>cargo vet</code></a></h4>
+<p>To prevent potential vulnerabilities in memory management,
+a focus on <code>unsafe</code> code is often needed in code reviews.
+Tooling like <a href="https://github.com/rust-secure-code/cargo-geiger"><code>cargo-geiger</code></a> can help
+track the use of unsafe code in dependencies.</p>
+<h3 id="DEPS-VET"><a class="header" href="#DEPS-VET">Assess dependencies with <code>cargo vet</code> (DEPS-VET)</a></h3>
 <p><code>cargo vet</code> is a project started by Mozilla
 (and now also <a href="https://opensource.googleblog.com/2023/05/open-sourcing-our-rust-crate-audits.html">used by Google</a>)
 to formalize crate audits in an organization, and be able to share
 these with the community.</p>
 <p>As this topic is all a matter of trust, by default <code>cargo vet</code> works with local audits
 you make yourselves.
-You can also import audit results from selected sources you trust, in the form of a git repository
-URL.
-There is no centralized data source nor default trusted source.</p>
+You can also <a href="https://mozilla.github.io/cargo-vet/importing-audits.html">import audit results</a>
+from selected sources you trust, in the form of a git repository
+URL. There is no centralized data source nor default trusted source.</p>
 <pre><code class="language-toml">[imports.mozilla]
 url = &quot;https://raw.githubusercontent.com/mozilla/supply-chain/main/audits.toml&quot;
 
 [imports.google]
 url = &quot;https://raw.githubusercontent.com/google/supply-chain/main/audits.toml&quot;
 </code></pre>
-<p>To prevent potential vulnerabilities in memory management, 
-a focus on <code>unsafe</code> code is often needed in code reviews.
-Tooling like <a href="https://github.com/rust-secure-code/cargo-geiger"><code>cargo-geiger</code></a> can help
-track the use of unsafe code in dependencies.</p>
-<p>There is a <a href="https://gist.github.com/repi/d98bf9c202ec567fd67ef9e31152f43f">very good checklist</a>
-covering many aspects of crate evaluation published (and used internally) by <a href="https://www.embark-studios.com/">Embark</a>.</p>
-<!--
-TODO include security-related parts of the check-list here?
--->
+<p>You can also <a href="https://mozilla.github.io/cargo-vet/trusting-publishers.html">trust specific publishers</a>.
+This lowers the level of scrutiny (as it does not protect against some threats)
+but allows focusing on more risky packages.</p>
 <h2 id="maintain-dependencies-over-time"><a class="header" href="#maintain-dependencies-over-time">Maintain dependencies over time</a></h2>
-<p>Once you have a dependency, you need to keep track of it
+<p>Once you have chosen to use a dependency, you need to keep track of it
 over time.</p>
 <h3 id="DEPS-VULNS"><a class="header" href="#DEPS-VULNS">Vulnerability and maintenance check (DEPS-VULNS)</a></h3>
 <p>You should also monitor for vulnerabilities and unmaintained crates using <code>cargo audit</code> or <code>cargo deny</code> regularly

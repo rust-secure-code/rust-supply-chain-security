@@ -180,24 +180,25 @@ in order to publish malicious versions of your crate.</p>
 <p>It is also important to help your consumers (library or binary program users)</p>
 <p>best practices to secure publication 
 and help crates consumers.</p>
-<h2 id="cargolock"><a class="header" href="#cargolock"><code>Cargo.lock</code></a></h2>
+<h2 id="include-necessary-information-to-make-the-builds-consistent"><a class="header" href="#include-necessary-information-to-make-the-builds-consistent">Include necessary information to make the builds consistent</a></h2>
+<h3 id="MAINTAIN-LOCK"><a class="header" href="#MAINTAIN-LOCK">Include <code>Cargo.lock</code> in sources (MAINTAIN-LOCK)</a></h3>
 <p>If you develop a binary program, it is important to commit the <code>Cargo.lock</code> file in your repository.
 This will help keep track of the exact versions used and ensure consistent and (mostly) reproducible builds.</p>
-<h2 id="rust-toolchaintoml"><a class="header" href="#rust-toolchaintoml"><code>rust-toolchain.toml</code></a></h2>
+<h3 id="MAINTAIN-TOOLCHAIN"><a class="header" href="#MAINTAIN-TOOLCHAIN">Include <code>rust-toolchain.toml</code> in sources (MAINTAIN-TOOLCHAIN)</a></h3>
 <p>In the same spirit, providing the Rust version to use in a <a href="https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file"><code>rust-toolchain.toml</code> file</a>
-in your sources allows ensuring all builds will use a consistent toolchain version.</p>
-<h2 id="features"><a class="header" href="#features">Features</a></h2>
-<p>Allow users of the crate to control transitive dependencies depending on their needs, using features.</p>
-<h2 id="maintaining-a-crate-building-cc-code"><a class="header" href="#maintaining-a-crate-building-cc-code">Maintaining a crate building C/C++ code</a></h2>
+in your binary program sources allows ensuring all builds will use a consistent toolchain version.</p>
+<pre><code class="language-toml">[toolchain]
+channel = &quot;1.71.0&quot;
+</code></pre>
+<h2 id="MAINTAIN-FEATURES"><a class="header" href="#MAINTAIN-FEATURES">Fine-grained features (MAINTAIN-FEATURES)</a></h2>
+<p>Allow users of the crate to control transitive dependencies depending on their 
+needs, using features.
+You can still define complete default features including
+broad use cases for convenience.</p>
+<h2 id="maintaining-a--sys-crate-building-cc-code"><a class="header" href="#maintaining-a--sys-crate-building-cc-code">Maintaining a <code>-sys</code> crate building C/C++ code</a></h2>
 <p>Some crates which provide bindings for a C or C++ library (<a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html#-sys-packages"><code>-sys</code> crates</a>) are also able to compile
 the library statically into the Rust binary. It is convenient but should be</p>
-<h3 id="use-a-dedicated-crate-if-possible"><a class="header" href="#use-a-dedicated-crate-if-possible">Use a dedicated crate if possible</a></h3>
-<p>Instead of building the static library directly in the <code>-sys</code> crate, a good practice is 
-to use a dedicated crate for this purpose (like <code>openssl-sys</code> and <code>openssl-src</code>).</p>
-<p>This allows making the presence of the embedded library visible in the cargo tooling
-(cargo tree, etc.), and more specifically to get security advisories for the embedded
-component through the usual channels (<code>cargo audit/deny</code>).</p>
-<h3 id="provide-flags-allowing-to-select-the-behavior"><a class="header" href="#provide-flags-allowing-to-select-the-behavior">Provide flags allowing to select the behavior</a></h3>
+<h3 id="MAINTAIN-SRCFLAG"><a class="header" href="#MAINTAIN-SRCFLAG">Provide flags allowing to select the behavior (MAINTAIN-SRCFLAG)</a></h3>
 <p>Users need to be able to be sure of the outcome of the build, whether they want to always
 embed the library statically, or enforce dynamic linking and make the build fail
 if it is missing.
@@ -205,13 +206,36 @@ A clear way to express this is to do dynamic linking by default
 and provide a flag (<code>vendored</code> or similar) to choose to embed the library.</p>
 <p>If the default behavior is to embed the library from the crate if missing on the system for convenience,
 then it should be documented clearly.</p>
-<h2 id="publication"><a class="header" href="#publication">Publication</a></h2>
-<h3 id="cratesio"><a class="header" href="#cratesio">crates.io</a></h3>
-<p>When using crates.io, you need to be careful about a few things.
-As crates.io uses GitHub as authentication layer, you should first properly secure your account using general best practices.
+<h3 id="MAINTAIN-SRCCRATE"><a class="header" href="#MAINTAIN-SRCCRATE">Use a dedicated crate if possible (MAINTAIN-SRCCRATE)</a></h3>
+<p>Instead of building the static library directly in the <code>-sys</code> crate, a good practice is
+to use a dedicated crate for this purpose (like <code>openssl-sys</code> and <code>openssl-src</code>).
+In this case, you can add the upstream version to the source crate version by using the build version defined in SemVer (defined as MAJOR.MINOR.PATCH+BUILD). For exemple, for openssl-src it gives <code>111.16.0+1.1.1l</code>, <code>1.1.1l</code> being the upstream packaged version.</p>
+<p>This allows making the presence of the embedded library visible in the cargo tooling
+(cargo tree, etc.), and more specifically to get security advisories for the embedded
+component through the usual channels (<code>cargo audit/deny</code>).
+This also allows
+correctly documenting the upstream code license separately from the Rust crate.</p>
+<h2 id="MAINTAIN-VULNS"><a class="header" href="#MAINTAIN-VULNS">Reporting vulnerabilities (MAINTAIN-VULNS)</a></h2>
+<p>If you find a vulnerability affecting your crate,
+<a href="https://rustsec.org/contributing.html">reporting it to the RustSec advisory database</a> will get
+your users warned if they use
+any kind of vulnerability detection on their dependencies.
+Reporting to RustSec only is enough, as the advisories will get imported
+by GitHub into their advisory own database (allowing alerts and pull requests by <em>dependabot</em> for example),
+and assigned a CVE when relevant.</p>
+<p>Note: RustSec is only a database for (public) vulnerabilities affecting crates.
+For everything related to the Rust toolchain, infrastructure, etc. or
+if you need confidentiality, you need to
+contact the security response team as per the
+<a href="https://www.rust-lang.org/policies/security">official security policy</a> at <a href="mailto:security@rust-lang.org">security@rust-lang.org</a>.</p>
+<h2 id="publication-on-cratesio"><a class="header" href="#publication-on-cratesio">Publication on crates.io</a></h2>
+<p>When using crates.io for publishing your crates, you need to be careful about a few things.</p>
+<h3 id="MAINTAIN-CRATESIO2FA"><a class="header" href="#MAINTAIN-CRATESIO2FA">GitHub account with 2FA enabled (MAINTAIN-CRATESIO2FA)</a></h3>
+<p>As crates.io uses GitHub as authentication layer, you should first properly secure your account using general best practices.
 In particular,
 make sure to have <a href="https://github.com/settings/security">two-factor authentication layer configured</a>
 (and avoid the SMS/Text message method).</p>
+<h3 id="MAINTAIN-CRATESIOTKN"><a class="header" href="#MAINTAIN-CRATESIOTKN">crates.io token configuration (MAINTAIN-CRATESIOTKN)</a></h3>
 <p>Apart from the Web interface, the other way to interact with crates.io is through its
 HTTP API,
 especially through cargo commands (<code>cargo publish</code>, etc.)
@@ -226,14 +250,6 @@ as an <a href="https://docs.github.com/en/actions/security-guides/encrypted-secr
 and passed as the
 <a href="https://doc.rust-lang.org/cargo/reference/config.html?highlight=CARGO_REGISTRY_TOKEN#credentials"><code>CARGO_REGISTRY_TOKEN</code></a> environment variable.</p>
 <p><img src="images/token.png" alt="New token form on crates.io" /></p>
-<h2 id="MAINTAIN-VULNS"><a class="header" href="#MAINTAIN-VULNS">Reporting vulnerabilities (MAINTAIN-VULNS)</a></h2>
-<p>If you find a vulnerability affecting your crate,
-<a href="https://rustsec.org/contributing.html">reporting it to the RustSec advisory database</a> will get
-your users warned if they use
-any kind of vulnerability detection on their dependencies.</p>
-<p>Reporting to RustSec only is enough as the advisories will get imported
-by GitHub into their advisory database (allowing alerts and pull requests by <em>dependabot</em> for example),
-end assigned a CVE when relevant.</p>
 <h2 id="MAINTAIN-CODESEC"><a class="header" href="#MAINTAIN-CODESEC">Code security best practices (MAINTAIN-CODESEC)</a></h2>
 <p>Apply security best practices to your code and tests, like <a href="https://rust-fuzz.github.io/book/introduction.html">fuzzing</a>,
 testing using <a href="https://github.com/rust-lang/miri">miri</a>, etc.
