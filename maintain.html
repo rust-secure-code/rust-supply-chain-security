@@ -174,12 +174,11 @@
                     <main>
                         <h1 id="maintaining-a-crate"><a class="header" href="#maintaining-a-crate">Maintaining a crate</a></h1>
 <p>This page contains the items related to crate maintenance, especially when
-you intend to make your crate public.</p>
-<p>An obvious risk is a takeover of the crate, for example, on the crates.io repository,
-in order to publish malicious versions of your crate.</p>
-<p>It is also important to help your consumers (library or binary program users)</p>
-<p>best practices to secure publication 
-and help crates consumers.</p>
+you intend to make your crate public.
+An obvious risk is a takeover of the crate, for example, on the crates.io repository,
+in order to publish malicious versions of your crate.
+It is also important to help your consumers (library or binary program users)
+tu secure their own supply chain.</p>
 <h2 id="include-necessary-information-to-make-the-builds-consistent"><a class="header" href="#include-necessary-information-to-make-the-builds-consistent">Include necessary information to make the builds consistent</a></h2>
 <h3 id="MAINTAIN-LOCK"><a class="header" href="#MAINTAIN-LOCK">Include <code>Cargo.lock</code> in sources (MAINTAIN-LOCK)</a></h3>
 <p>If you develop a binary program, it is important to commit the <code>Cargo.lock</code> file in your repository.
@@ -209,7 +208,7 @@ then it should be documented clearly.</p>
 <h3 id="MAINTAIN-SRCCRATE"><a class="header" href="#MAINTAIN-SRCCRATE">Use a dedicated crate if possible (MAINTAIN-SRCCRATE)</a></h3>
 <p>Instead of building the static library directly in the <code>-sys</code> crate, a good practice is
 to use a dedicated crate for this purpose (like <code>openssl-sys</code> and <code>openssl-src</code>).
-In this case, you can add the upstream version to the source crate version by using the build version defined in SemVer (defined as MAJOR.MINOR.PATCH+BUILD). For exemple, for openssl-src it gives <code>111.16.0+1.1.1l</code>, <code>1.1.1l</code> being the upstream packaged version.</p>
+In this case, you can add the upstream version to the source crate version by using the build version defined in SemVer (defined as MAJOR.MINOR.PATCH+BUILD). For example, for openssl-src it gives <code>111.16.0+1.1.1l</code>, <code>1.1.1l</code> being the upstream packaged version.</p>
 <p>This allows making the presence of the embedded library visible in the cargo tooling
 (cargo tree, etc.), and more specifically to get security advisories for the embedded
 component through the usual channels (<code>cargo audit/deny</code>).

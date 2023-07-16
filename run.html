@@ -174,11 +174,9 @@
                     <main>
                         <h1 id="running-in-production"><a class="header" href="#running-in-production">Running in production</a></h1>
 <p>In this section, we will see what we can do to track
-known vulnerabilities in Rust programs.</p>
-<p>It won't cover generic deployment security as there are numerous options
-(containers, Windows msi/exe installers, Linux rpm/dpkg/etc. packages, etc.)
-but you should make sure you can verify that deployed artifacts'
-source and integrity (various artifact signature mechanisms can help).</p>
+potential security issues once the program is deployed.
+It won't cover generic deployment security as there are numerous options
+(containers, Windows msi/exe installers, Linux rpm/dpkg/etc. packages, etc).</p>
 <h2 id="audit-binaries"><a class="header" href="#audit-binaries">Audit binaries</a></h2>
 <h3 id="crates"><a class="header" href="#crates">Crates</a></h3>
 <p><code>cargo audit</code> has some <a href="https://github.com/rustsec/rustsec/tree/main/cargo-audit#cargo-audit-bin-subcommand">capacities

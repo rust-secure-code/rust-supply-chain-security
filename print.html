@@ -333,12 +333,11 @@ ensuring to get easy access to security fixes in case of security vulnerability.
 Use <a href="https://github.com/kbknapp/cargo-outdated"><code>cargo outdated</code></a> to show possible updates.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="maintaining-a-crate"><a class="header" href="#maintaining-a-crate">Maintaining a crate</a></h1>
 <p>This page contains the items related to crate maintenance, especially when
-you intend to make your crate public.</p>
-<p>An obvious risk is a takeover of the crate, for example, on the crates.io repository,
-in order to publish malicious versions of your crate.</p>
-<p>It is also important to help your consumers (library or binary program users)</p>
-<p>best practices to secure publication 
-and help crates consumers.</p>
+you intend to make your crate public.
+An obvious risk is a takeover of the crate, for example, on the crates.io repository,
+in order to publish malicious versions of your crate.
+It is also important to help your consumers (library or binary program users)
+tu secure their own supply chain.</p>
 <h2 id="include-necessary-information-to-make-the-builds-consistent"><a class="header" href="#include-necessary-information-to-make-the-builds-consistent">Include necessary information to make the builds consistent</a></h2>
 <h3 id="MAINTAIN-LOCK"><a class="header" href="#MAINTAIN-LOCK">Include <code>Cargo.lock</code> in sources (MAINTAIN-LOCK)</a></h3>
 <p>If you develop a binary program, it is important to commit the <code>Cargo.lock</code> file in your repository.
@@ -368,7 +367,7 @@ then it should be documented clearly.</p>
 <h3 id="MAINTAIN-SRCCRATE"><a class="header" href="#MAINTAIN-SRCCRATE">Use a dedicated crate if possible (MAINTAIN-SRCCRATE)</a></h3>
 <p>Instead of building the static library directly in the <code>-sys</code> crate, a good practice is
 to use a dedicated crate for this purpose (like <code>openssl-sys</code> and <code>openssl-src</code>).
-In this case, you can add the upstream version to the source crate version by using the build version defined in SemVer (defined as MAJOR.MINOR.PATCH+BUILD). For exemple, for openssl-src it gives <code>111.16.0+1.1.1l</code>, <code>1.1.1l</code> being the upstream packaged version.</p>
+In this case, you can add the upstream version to the source crate version by using the build version defined in SemVer (defined as MAJOR.MINOR.PATCH+BUILD). For example, for openssl-src it gives <code>111.16.0+1.1.1l</code>, <code>1.1.1l</code> being the upstream packaged version.</p>
 <p>This allows making the presence of the embedded library visible in the cargo tooling
 (cargo tree, etc.), and more specifically to get security advisories for the embedded
 component through the usual channels (<code>cargo audit/deny</code>).
@@ -528,11 +527,9 @@ cargo sbom --output-format cyclone_dx_json_1_4 &gt; sbom.cdx.json
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="running-in-production"><a class="header" href="#running-in-production">Running in production</a></h1>
 <p>In this section, we will see what we can do to track
-known vulnerabilities in Rust programs.</p>
-<p>It won't cover generic deployment security as there are numerous options
-(containers, Windows msi/exe installers, Linux rpm/dpkg/etc. packages, etc.)
-but you should make sure you can verify that deployed artifacts'
-source and integrity (various artifact signature mechanisms can help).</p>
+potential security issues once the program is deployed.
+It won't cover generic deployment security as there are numerous options
+(containers, Windows msi/exe installers, Linux rpm/dpkg/etc. packages, etc).</p>
 <h2 id="audit-binaries"><a class="header" href="#audit-binaries">Audit binaries</a></h2>
 <h3 id="crates"><a class="header" href="#crates">Crates</a></h3>
 <p><code>cargo audit</code> has some <a href="https://github.com/rustsec/rustsec/tree/main/cargo-audit#cargo-audit-bin-subcommand">capacities
@@ -591,11 +588,11 @@ tooling (<code>cargo audit/deny</code>) is not able to warn you about these. You
 <li><input disabled="" type="checkbox"/>
 🔒 Dependencies are vetted (<a href="dependencies.html#DEPS-ASSESS">DEPS-ASSESS</a>)</li>
 <li><input disabled="" type="checkbox"/>
-⭐️ Dependencies are reviewed using <code>cargo vet</code> (<a href="dependencies.html#DEPS-VET">DEPS-VET</a>)</li>
+👍 Dependencies are reviewed using <code>cargo vet</code> (<a href="dependencies.html#DEPS-VET">DEPS-VET</a>)</li>
 <li><input disabled="" type="checkbox"/>
 🔒 Known vulnerabilities and unmaintained crates are regularly checked (<a href="dependencies.html#DEPS-VULNS">DEPS-VULNS</a>)</li>
 <li><input disabled="" type="checkbox"/>
-🔒 Dependencies are up-to-date (<a href="dependencies.html#DEPS-UPDATES">DEPS-UPDATES</a>)</li>
+🔒 Dependencies are kept up-to-date (<a href="dependencies.html#DEPS-UPDATES">DEPS-UPDATES</a>)</li>
 </ul>
 <h2 id="maintain-a-crate"><a class="header" href="#maintain-a-crate">Maintain a crate</a></h2>
 <ul>
@@ -642,11 +639,11 @@ Publication access to crates.io is secured
 <li><input disabled="" type="checkbox"/>
 👍 Build is fully reproducible (<a href="build.html#BUILD-REPRODUCIBLE">BUILD-REPRODUCIBLE</a>)</li>
 <li><input disabled="" type="checkbox"/>
-👍 Build environment is ephemeral and isolated (<a href="build.html#BUILD-ISOLATED">BUILD-ISOLATED</a>)</li>
+⭐️ Build environment is ephemeral and isolated (<a href="build.html#BUILD-ISOLATED">BUILD-ISOLATED</a>)</li>
 <li><input disabled="" type="checkbox"/>
-👍 Build uses <code>cargo auditable</code> to embed dependencies information (<a href="build.html#BUILD-AUDITABLE">BUILD-AUDITABLE</a>)</li>
+⭐️ Build uses <code>cargo auditable</code> to embed dependencies information (<a href="build.html#BUILD-AUDITABLE">BUILD-AUDITABLE</a>)</li>
 <li><input disabled="" type="checkbox"/>
-ℹ️ Built binaries are signed (<a href="build.html#BUILD-SIGN">BUILD-SIGN</a>)</li>
+👍 Built binaries are signed (<a href="build.html#BUILD-SIGN">BUILD-SIGN</a>)</li>
 <li><input disabled="" type="checkbox"/>
 ℹ️ Build produces a <em>Software Bill of Materials</em> (<a href="build.html#BUILD-SBOM">BUILD-SBOM</a>)</li>
 </ul>
@@ -660,20 +657,13 @@ Publication access to crates.io is secured
 <ul>
 <li><a href="https://blog.logrocket.com/comparing-rust-supply-chain-safety-tools/">Comparing Rust supply chain safety tools</a> (May 2022, by llogiq)</li>
 <li><a href="https://www.bitfalter.com/rust-supply-chain-security">Rust Supply Chain Security</a> (April 2023, by Bitfalter)</li>
-<li><a href="https://internals.rust-lang.org/t/about-supply-chain-attacks/14038">About Supply Chain Attacks</a> (February 2021, topic on IRLO)</li>
 </ul>
 <h2 id="general-rust-security"><a class="header" href="#general-rust-security">General Rust Security</a></h2>
 <ul>
 <li><a href="https://anssi-fr.github.io/rust-guide/">Secure Rust Guidelines</a> (May 2022, by ANSSI)</li>
 <li><a href="https://insights.sei.cmu.edu/blog/rust-software-security-a-current-state-assessment/">Rust Software Security: A Current State Assessment</a> (December 2022, Software Engineering Institute, CMU)</li>
-<li><a href="https://highassurance.rs/">High-Assurance Rust: Developing Secure and Robust Software</a></li>
-<li><a href="https://rust-fuzz.github.io/book/introduction.html">Rust Fuzz Book</a></li>
+<li><a href="https://highassurance.rs/">High-Assurance Rust</a> book</li>
 <li><a href="https://github.com/rust-secure-code/projects">List of security-related projects</a></li>
-</ul>
-<h2 id="report-security-issues"><a class="header" href="#report-security-issues">Report security issues</a></h2>
-<ul>
-<li><a href="https://www.rust-lang.org/policies/security">Rust's official Security Policy</a></li>
-<li><a href="https://rustsec.org/">RustSec, a vulnerability database for the Rust ecosystem</a></li>
 </ul>
 
                     </main>
