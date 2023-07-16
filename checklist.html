@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html" class="active">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="checklist.html" class="active">Checklist</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -206,11 +206,15 @@
 🔒 The GitHub accounts owning the crates have 2FA enabled</li>
 </ul>
 </li>
+<li><input disabled="" type="checkbox"/>
+⭐️ Apply code security best practices (<a href="maintain.html#publication">MAINTAIN-CODESEC</a>)</li>
 </ul>
 <h2 id="build-for-production"><a class="header" href="#build-for-production">Build for production</a></h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
 🔒 Build uses <code>--locked</code> for reproducibility (<a href="build.html#deterministic-builds">BUILD-LOCKED</a>)</li>
+<li><input disabled="" type="checkbox"/>
+👍 Build uses a trusted toolchain (<a href="build.html#deterministic-builds">BUILD-TOOLCHAIN</a>)</li>
 <li><input disabled="" type="checkbox"/>
 👍 Build uses <code>cargo auditable</code> (<a href="build.html#embed-dependency-list-in-binaries">BUILD-AUDITABLE</a>) to embed dependencies information</li>
 <li><input disabled="" type="checkbox"/>
@@ -226,11 +230,11 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="run.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="dependencies.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="links.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -240,11 +244,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="run.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="dependencies.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="links.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

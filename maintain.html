@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html" class="active"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html" class="active"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -181,16 +181,16 @@ in order to publish malicious versions of your crate.</p>
 <p>best practices to secure publication 
 and help crates consumers.</p>
 <h2 id="cargolock"><a class="header" href="#cargolock"><code>Cargo.lock</code></a></h2>
-<p>If you develop a binary, it is important to commit the <code>Cargo.lock</code> file in your repository.
-This will help keep track of the exact versions used and ensure consistent builds.</p>
+<p>If you develop a binary program, it is important to commit the <code>Cargo.lock</code> file in your repository.
+This will help keep track of the exact versions used and ensure consistent and (mostly) reproducible builds.</p>
 <h2 id="rust-toolchaintoml"><a class="header" href="#rust-toolchaintoml"><code>rust-toolchain.toml</code></a></h2>
+<p>In the same spirit, providing the Rust version to use in a <a href="https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file"><code>rust-toolchain.toml</code> file</a>
+in your sources allows ensuring all builds will use a consistent toolchain version.</p>
 <h2 id="features"><a class="header" href="#features">Features</a></h2>
-<ul>
-<li>Allow users of the crate to control transitive dependencies depending on their needs, using features.</li>
-</ul>
+<p>Allow users of the crate to control transitive dependencies depending on their needs, using features.</p>
 <h2 id="maintaining-a-crate-building-cc-code"><a class="header" href="#maintaining-a-crate-building-cc-code">Maintaining a crate building C/C++ code</a></h2>
-<p>Some crates which provide bindings for a C or C++ library provide the option
-to </p>
+<p>Some crates which provide bindings for a C or C++ library (<a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html#-sys-packages"><code>-sys</code> crates</a>) are also able to compile
+the library statically into the Rust binary. It is convenient but should be</p>
 <h3 id="use-a-dedicated-crate-if-possible"><a class="header" href="#use-a-dedicated-crate-if-possible">Use a dedicated crate if possible</a></h3>
 <p>Instead of building the static library directly in the <code>-sys</code> crate, a good practice is 
 to use a dedicated crate for this purpose (like <code>openssl-sys</code> and <code>openssl-src</code>).</p>
@@ -234,6 +234,10 @@ any kind of vulnerability detection on their dependencies.</p>
 <p>Reporting to RustSec only is enough as the advisories will get imported
 by GitHub into their advisory database (allowing alerts and pull requests by <em>dependabot</em> for example),
 end assigned a CVE when relevant.</p>
+<h2 id="MAINTAIN-CODESEC"><a class="header" href="#MAINTAIN-CODESEC">Code security best practices (MAINTAIN-CODESEC)</a></h2>
+<p>Apply security best practices to your code and tests, like <a href="https://rust-fuzz.github.io/book/introduction.html">fuzzing</a>,
+testing using <a href="https://github.com/rust-lang/miri">miri</a>, etc.
+You can learn more in the <a href="https://highassurance.rs/">High Assurance Rust</a> book.</p>
 
                     </main>
 

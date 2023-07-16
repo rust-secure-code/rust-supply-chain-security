@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html" class="active">Introduction</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html" class="active">Introduction</a></li><li class="chapter-item expanded "><a href="dependencies.html"><strong aria-hidden="true">1.</strong> Manage dependencies</a></li><li class="chapter-item expanded "><a href="maintain.html"><strong aria-hidden="true">2.</strong> Maintain a crate</a></li><li class="chapter-item expanded "><a href="build.html"><strong aria-hidden="true">3.</strong> Build for production</a></li><li class="chapter-item expanded "><a href="run.html"><strong aria-hidden="true">4.</strong> Run in production</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li><li class="chapter-item expanded affix "><a href="links.html">External links</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -188,10 +188,10 @@ build toolchain (<code>rustc</code>, <code>cargo</code>), CI/CD platforms, binar
 <p>The software supply chain has been an increasingly frequent target
 in recent years, as it allows attacking well-secured systems
 by focusing on weaker links in their supply chain,
-or attacking multiple targets with a single entry point.
-In response, </p>
+or attacking multiple targets with a single entry point.</p>
 <p>Diagram of the software supply chain risks (by the SLSA project)<sup class="footnote-reference"><a href="#threats">2</a></sup>:</p>
 <p><img src="images/supply-chain-threats.svg" alt="The supply chains threats, SLSA project" /></p>
+<p>In response, there are some steps that can be </p>
 <h2 id="about-this-guide"><a class="header" href="#about-this-guide">About this guide</a></h2>
 <p>This guide is not a general introduction to the software supply chain security topic.
 To learn more about it, you can
@@ -199,11 +199,11 @@ have a look at introductions by vendors like <a href="https://www.redhat.com/en/
 or <a href="https://snyk.io/series/software-supply-chain-security/">snyk</a>,
 or the <a href="https://openssf.org/">OpenSSF</a> and <a href="https://slsa.dev">SLSA</a>
 projects.</p>
-<p>It is aimed at Rust developers, whether working on libraries in the ecosystem or on programs
+<p>This document is aimed at Rust developers, whether working on libraries in the ecosystem or on programs
 for end-users (and some parts of the guide are only applicable to one of these situations).
 It focuses on currently available tooling for the Rust ecosystem and provides actionable items
 whenever possible.</p>
-<p>The <a href="./checklist.html">checklist</a> gives an overview of the recommendations from the whole guide
+<p>The <a href="./checklist.html">checklist</a> at the end gives an overview of the recommendations from the whole guide
 and helps to prioritize the different topics.</p>
 <div class="footnote-definition" id="wiki"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/w/index.php?title=Software_supply_chain&amp;oldid=1148357822#cite_note-1"><em>Software Supply Chain</em></a> on Wikipedia (en)
@@ -220,7 +220,7 @@ and helps to prioritize the different topics.</p>
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
 
-                            <a rel="next" href="checklist.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="dependencies.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -231,7 +231,7 @@ and helps to prioritize the different topics.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
 
-                    <a rel="next" href="checklist.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="dependencies.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
