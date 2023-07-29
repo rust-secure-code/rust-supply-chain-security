@@ -1,6 +1,6 @@
 # Rust Supply Chain Security Guide
 
-Read online: [The Rust Supply Chain Security Guide](https://amousset.github.io/rust-supply-chain-security/)
+Read online: [The Rust Supply Chain Security Guide](https://rust-secure-code.github.io/rust-supply-chain-security/)
 
 ## Development
 
