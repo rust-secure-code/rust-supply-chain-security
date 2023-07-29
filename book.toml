@@ -8,6 +8,6 @@ description = "A guide to securing the software supply chain of Rust programs an
 edition = "2021"
 
 [output.html]
-git-repository-url = "https://github.com/amousset/rust-supply-chain-security"
+git-repository-url = "https://github.com/rust-secure-code/rust-supply-chain-security"
 git-repository-icon = "fa-github"
-edit-url-template = "https://github.com/amousset/rust-supply-chain-security/edit/main/{path}"
+edit-url-template = "https://github.com/rust-secure-code/rust-supply-chain-security/edit/main/{path}"
